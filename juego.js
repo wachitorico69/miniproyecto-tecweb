@@ -33,7 +33,7 @@ function preload ()
     this.load.image('ground', 'assets/platform.png');
     this.load.image('star', 'assets/star.png');
     this.load.image('bomb', 'assets/bomb.png');
-    this.load.spritesheet('dude', 'assets/dude.png', { frameWidth: 32, frameHeight: 48 });
+    this.load.atlas('dude', 'assets/dio.png', 'assets/diosprites.json');
 }
 
 function create ()
@@ -60,27 +60,44 @@ function create ()
     player.setBounce(0.2);
     player.setCollideWorldBounds(true);
 
+    player.setOrigin(0.5, 0.5); 
+    player.body.setSize(30, 95).setOffset(10, 10);
+
     //  Our player animations, turning, walking left and walking right.
     this.anims.create({
         key: 'left',
-        frames: this.anims.generateFrameNumbers('dude', { start: 0, end: 3 }),
+        frames: this.anims.generateFrameNames('dude', { prefix: 'izq', end: 15, zeroPad: 4}),
         frameRate: 10,
         repeat: -1
     });
 
     this.anims.create({
         key: 'turn',
-        frames: [ { key: 'dude', frame: 4 } ],
-        frameRate: 20
+        frames: this.anims.generateFrameNames('dude', { prefix: 'parado', end: 5, zeroPad: 4}),
+        frameRate: 10
     });
 
     this.anims.create({
         key: 'right',
-        frames: this.anims.generateFrameNumbers('dude', { start: 5, end: 8 }),
+        frames: this.anims.generateFrameNames('dude', { prefix: 'der', end: 15, zeroPad: 4}),
         frameRate: 10,
         repeat: -1
     });
 
+    this.anims.create({
+        key: 'saltod',
+        frames: this.anims.generateFrameNames('dude', { prefix: 'saltod', end: 9, zeroPad: 4}),
+        frameRate: 10,
+        repeat: -1
+    });
+
+    this.anims.create({
+        key: 'daño',
+        frames: [{ key: 'dude', frame: 'daño' }], // Usa un solo frame
+        frameRate: 10,
+        repeat: 0 // No se repite, ya que es un golpe
+    });
+    
     //  Input Events
     cursors = this.input.keyboard.createCursorKeys();
 
@@ -137,7 +154,7 @@ function update ()
     {
         player.setVelocityX(0);
 
-        player.anims.play('turn');
+        player.anims.play('turn', true);
     }
 
     if (cursors.up.isDown && player.body.touching.down)
@@ -180,9 +197,7 @@ function hitBomb (player, bomb)
 
     player.setTint(0xff0000);
 
-    player.anims.play('turn');
+    player.anims.play('daño');
 
     gameOver = true;
 }
-
-
