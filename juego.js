@@ -1,3 +1,109 @@
+//MENU
+class MenuScene extends Phaser.Scene {
+    constructor() {
+        super({ key: 'MenuScene' }); //no funciona sin esto
+    }
+    preload() { //imagenes
+        
+    }
+    create() { 
+        //Play
+        this.add.text(300, 250, 'Start Game', { fontSize: '32px', fill: '#fff' })
+            .setInteractive()
+            .on('pointerdown', () => {
+                this.scene.start('GameScene'); // Switch to the game scene
+            });
+
+        //Record
+        this.add.text(300, 290, 'Records', { fontSize: '32px', fill: '#fff' })
+            .setInteractive()
+            .on('pointerdown', () => {
+                this.scene.start('RecordsScene');// Switch to the game records
+            });
+        
+        //config
+        this.add.text(300, 330, 'Help', { fontSize: '32px', fill: '#fff' })
+            .setInteractive()
+            .on('pointerdown', () => {
+                this.scene.start('HelpScene');// Switch to the game Help (instructions)
+            });
+
+        //config
+        this.add.text(300, 370, 'Exit', { fontSize: '32px', fill: '#fff' })
+            .setInteractive()
+            .on('pointerdown', () => {
+                window.location.href = "about:blank"; // Switch to leave
+            });
+    }
+}
+//MENU-record
+class RecordsScene extends Phaser.Scene {
+    constructor() {
+        super({ key: 'RecordsScene' }); //no funciona sin esto
+    }
+    preload() { //imagenes
+        
+    }
+    create() { 
+    
+        this.add.text(300, 250, 'High Scores:', { fontSize: '32px', fill: '#fff' });//titulo
+
+        this.add.text(300, 290, 'Back', { fontSize: '32px', fill: '#fff' })
+            .setInteractive()
+            .on('pointerdown', () => {
+                this.scene.start('MenuScene'); // Switch to the game menu
+            });
+    }
+}
+//MENU-help
+class HelpScene extends Phaser.Scene {
+    constructor() {
+        super({ key: 'HelpScene' }); //no funciona sin esto
+    }
+    preload() { //imagenes
+        
+    }
+    create() { 
+        
+        this.add.text(300, 250, 'Help:', { fontSize: '32px', fill: '#fff' });//titulo
+
+        this.add.text(300, 290, 'Back', { fontSize: '32px', fill: '#fff' })
+            .setInteractive()
+            .on('pointerdown', () => {
+                this.scene.start('MenuScene'); // Switch to the game menu
+            });
+    }
+}
+
+//JUEGO
+class GameScene extends Phaser.Scene {
+    constructor() {
+        super({ key: 'GameScene' }); //no funciona sin esto
+    }
+    preload = preload;
+    create = create; //esta asignando el funcion create al que esta fuera del clase
+    update = update;
+}
+//JUEGO-pausa
+class PauseScene extends Phaser.Scene {
+    constructor() {
+        super({ key: 'PauseScene' });
+    }
+
+    create() {
+        this.add.text(300, 250, 'Game Paused', { fontSize: '32px', fill: '#fff' });
+
+        this.escKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC); //UNpause game
+    }
+
+    update() {
+        if (Phaser.Input.Keyboard.JustDown(this.escKey)) {
+            this.scene.resume('GameScene'); // Open pause menu
+            this.scene.stop(); // Pause game
+        }
+    }
+}
+
 var config = {
     type: Phaser.AUTO,
     width: 800,
@@ -9,11 +115,7 @@ var config = {
             debug: false
         }
     },
-    scene: {
-        preload: preload,
-        create: create,
-        update: update
-    }
+    scene: [MenuScene, GameScene, RecordsScene, HelpScene, PauseScene] //escenas en el juego (menu,juego)
 };
 
 var player;
@@ -129,6 +231,9 @@ function create ()
     this.physics.add.overlap(player, stars, collectStar, null, this);
 
     this.physics.add.collider(player, bombs, hitBomb, null, this);
+    
+    this.escKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC); //pause game
+    
 }
 
 function update ()
@@ -160,6 +265,11 @@ function update ()
     if (cursors.up.isDown && player.body.touching.down)
     {
         player.setVelocityY(-330);
+    }
+
+    if (Phaser.Input.Keyboard.JustDown(this.escKey)) {
+        this.scene.launch('PauseScene'); // Open pause menu
+        this.scene.pause(); // Pause game
     }
 }
 
