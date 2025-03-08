@@ -93,7 +93,7 @@ class GameScene extends Phaser.Scene {
             this.anims.create({
                 key: 'daño',
                 frames: [{ key: 'dude', frame: 'daño' }], // Usa un solo frame
-                frameRate: 1,
+                frameRate: 10,
                 repeat: 0 // No se repite, ya que es un golpe
             }); 
             
