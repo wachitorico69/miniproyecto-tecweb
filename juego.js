@@ -11,10 +11,9 @@ class GameScene extends Phaser.Scene {
             this.load.image('star', 'assets/star.png');
             this.load.image('bomb', 'assets/bomb.png');
 
-            //DIO this.load.atlas('dude', 'assets/dio.png', 'assets/diosprites.json');
-            this.load.atlas('dude', 'assets/jojo.png', 'assets/jojosprites.json');
-
-            this.load.atlas('dude', 'assets/dio.png', 'assets/diosprites.json');
+            this.load.atlas('dude', 'assets/dio.png', 'assets/diosprites.json');   //DIO
+            //this.load.atlas('dude', 'assets/jojo.png', 'assets/jojosprites.json'); //JOTARO
+            
             life = 3;
             score = 0;
 
@@ -40,55 +39,63 @@ class GameScene extends Phaser.Scene {
             player = this.physics.add.sprite(100, 450, 'dude');
 
             //  Player physics properties. Give the little guy a slight bounce.
-            player.setBounce(0.2);
+            //player.setBounce(0.2);
             player.setCollideWorldBounds(true);
 
             //DIO SETTINGS
-            //player.setOrigin(0.5, 0.5); 
-            //player.body.setSize(30, 95).setOffset(10, 10);
+            player.setOrigin(0.5, 0.5); 
+            player.body.setSize(30, 95).setOffset(10, 10);
 
             //JOTARO SETTINGS
-            player.setOrigin(0.5, 0.5);
-            player.body.setSize(50, 90).setOffset(20, 10);
-
+            //player.setOrigin(0.5, 0.5);
+            //player.body.setSize(50, 90).setOffset(20, 10);
+            
             //  Our player animations, turning, walking left and walking right.
             this.anims.create({
                 key: 'left',
-                //DIO frames: this.anims.generateFrameNames('dude', { prefix: 'izq', end: 15, zeroPad: 4}),
-                frames: this.anims.generateFrameNames('dude', { prefix: 'izq', end: 9, zeroPad: 4}),
+                frames: this.anims.generateFrameNames('dude', { prefix: 'izq', end: 15, zeroPad: 4}), //DIO
+                //frames: this.anims.generateFrameNames('dude', { prefix: 'izq', end: 9, zeroPad: 4}),  //JOTARO
                 frameRate: 10,
                 repeat: -1
             });
 
             this.anims.create({
                 key: 'turn',
-                //DIO frames: this.anims.generateFrameNames('dude', { prefix: 'parado', end: 5, zeroPad: 4}),
-                frames: this.anims.generateFrameNames('dude', { prefix: 'parado', end: 15, zeroPad: 4}),
-                //DIO frameRate: 8
+                frames: this.anims.generateFrameNames('dude', { prefix: 'parado', end: 5, zeroPad: 4}),  //DIO
+                //frames: this.anims.generateFrameNames('dude', { prefix: 'parado', end: 15, zeroPad: 4}),  //JOTARO
                 frameRate: 8
             });
 
             this.anims.create({
                 key: 'right',
-                //DIO frames: this.anims.generateFrameNames('dude', { prefix: 'der', end: 15, zeroPad: 4}),
-                frames: this.anims.generateFrameNames('dude', { prefix: 'der', end: 9, zeroPad: 4}),
+                frames: this.anims.generateFrameNames('dude', { prefix: 'der', end: 15, zeroPad: 4}),  //DIO
+                //frames: this.anims.generateFrameNames('dude', { prefix: 'der', end: 9, zeroPad: 4}),  //JOTARO
                 frameRate: 10,
                 repeat: -1
-            });
+                });
 
             this.anims.create({
-                key: 'saltod',
-                frames: this.anims.generateFrameNames('dude', { prefix: 'saltod', end: 9, zeroPad: 4}),
+                key: 'saltoi',
+                frames: this.anims.generateFrameNames('dude', { prefix: 'saltoi', end: 9, zeroPad: 4 }),  //DIO
+                //frames: this.anims.generateFrameNames('dude', { prefix: 'saltoi', end: 10, zeroPad: 4 }), //JOTARO
                 frameRate: 10,
-                repeat: -1
+                repeat: 0
+            });
+    
+            this.anims.create({
+                key: 'saltod',
+                frames: this.anims.generateFrameNames('dude', { prefix: 'saltod', end: 9, zeroPad: 4 }),  //DIO
+                //frames: this.anims.generateFrameNames('dude', { prefix: 'saltod', end: 10, zeroPad: 4 }),  //JOTARO
+                frameRate: 10,
+                repeat: 0
             });
 
             this.anims.create({
                 key: 'daño',
                 frames: [{ key: 'dude', frame: 'daño' }], // Usa un solo frame
-                frameRate: 10,
+                frameRate: 1,
                 repeat: 0 // No se repite, ya que es un golpe
-            });
+            }); 
             
             //  Input Events
             cursors = this.input.keyboard.createCursorKeys();
@@ -127,31 +134,45 @@ class GameScene extends Phaser.Scene {
         }
     update ()
         {
-            if (cursors.left.isDown)
+        if (cursors.left.isDown)
             {
                 player.setVelocityX(-160);
-        
-                player.anims.play('left', true);
+            
+                if (!player.body.touching.down) {
+                    player.anims.play('saltoi', true);
+                } else{
+                    player.anims.play('left', true);
+                }
+                    
             }
             else if (cursors.right.isDown)
             {
                 player.setVelocityX(160);
-        
-                player.anims.play('right', true);
+            
+                if (!player.body.touching.down) {
+                    player.anims.play('saltod', true);
+                } else{
+                    player.anims.play('right', true);
+                }
+            
             }
             else
             {
                 player.setVelocityX(0);
-        
-                player.anims.play('turn', true);
+            
+                if (player.body.touching.down) {
+                    player.anims.play('turn', true);
+                }
             }
-        
+            
             if (cursors.up.isDown && player.body.touching.down)
             {
                 player.setVelocityY(-330);
-                player.anims.play('saltod', true);
+                    
+                player.anims.play('saltod', true);  //DIO
+                //player.anims.play('saltoi', true);  //JOTARO
             }
-        
+            
             if (Phaser.Input.Keyboard.JustDown(this.escKey)) {
                 this.scene.launch('PauseScene'); // Open pause menu
                 this.scene.pause(); // Pause game
