@@ -349,3 +349,35 @@ function restartGame() {
     }
     startPhaserGame(); // Create a fresh instance
 }
+//records de personas
+function records(){
+    const menuContainer = document.getElementById('menuContainer');
+    menuContainer.innerHTML = ''; 
+
+    const title = document.createElement('h2');
+    title.textContent = 'Records';
+
+    const backButton = document.createElement('button');
+    backButton.textContent = 'Back to Menu';
+    backButton.onclick = () => location.reload();
+
+    //appendChild
+    menuContainer.appendChild(title);
+    menuContainer.appendChild(backButton);
+}
+//ayuda
+function help(){
+    const menuContainer = document.getElementById('menuContainer');
+    menuContainer.innerHTML = ''; 
+
+    const title = document.createElement('h2');
+    title.textContent = 'Help Page';
+
+    const backButton = document.createElement('button');
+    backButton.textContent = 'Back to Menu';
+    backButton.onclick = () => location.reload();
+
+    //appendChild
+    menuContainer.appendChild(title);
+    menuContainer.appendChild(backButton);
+}
