@@ -6,7 +6,7 @@ class GameScene extends Phaser.Scene {
     
     preload ()
         {
-            this.load.image('sky', 'assets/sky.png');
+            this.load.image('nivel1', 'assets/nivel1.png');
             this.load.image('ground', 'assets/platform.png');
             this.load.image('star', 'assets/star.png');
             this.load.image('bomb', 'assets/bomb.png');
@@ -21,7 +21,7 @@ class GameScene extends Phaser.Scene {
     create ()
         {
             //  A simple background for our game
-            this.add.image(400, 300, 'sky');
+            this.add.image(480, 269, 'nivel1');
 
             //  The platforms group contains the ground and the 2 ledges we can jump on
             platforms = this.physics.add.staticGroup();
@@ -241,8 +241,8 @@ if (window.game) {
 function startPhaserGame() {
     window.game = new Phaser.Game({
         type: Phaser.AUTO,
-        width: 800,
-        height: 600,
+        width: 960,
+        height: 538,
         parent: 'gameContainer',
         physics: {
             default: 'arcade',
