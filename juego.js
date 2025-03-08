@@ -170,9 +170,14 @@ function preload ()
     this.load.image('ground', 'assets/platform.png');
     this.load.image('star', 'assets/star.png');
     this.load.image('bomb', 'assets/bomb.png');
+
+    //DIO this.load.atlas('dude', 'assets/dio.png', 'assets/diosprites.json');
+    this.load.atlas('dude', 'assets/jojo.png', 'assets/jojosprites.json');
+
     this.load.atlas('dude', 'assets/dio.png', 'assets/diosprites.json');
     life = 3;
     score = 0;
+
 }
 
 function create ()
@@ -199,26 +204,35 @@ function create ()
     player.setBounce(0.2);
     player.setCollideWorldBounds(true);
 
-    player.setOrigin(0.5, 0.5); 
-    player.body.setSize(30, 95).setOffset(10, 10);
+    //DIO SETTINGS
+    //player.setOrigin(0.5, 0.5); 
+    //player.body.setSize(30, 95).setOffset(10, 10);
+
+    //JOTARO SETTINGS
+    player.setOrigin(0.5, 0.5);
+    player.body.setSize(50, 90).setOffset(20, 10);
 
     //  Our player animations, turning, walking left and walking right.
     this.anims.create({
         key: 'left',
-        frames: this.anims.generateFrameNames('dude', { prefix: 'izq', end: 15, zeroPad: 4}),
+        //DIO frames: this.anims.generateFrameNames('dude', { prefix: 'izq', end: 15, zeroPad: 4}),
+        frames: this.anims.generateFrameNames('dude', { prefix: 'izq', end: 9, zeroPad: 4}),
         frameRate: 10,
         repeat: -1
     });
 
     this.anims.create({
         key: 'turn',
-        frames: this.anims.generateFrameNames('dude', { prefix: 'parado', end: 5, zeroPad: 4}),
-        frameRate: 10
+        //DIO frames: this.anims.generateFrameNames('dude', { prefix: 'parado', end: 5, zeroPad: 4}),
+        frames: this.anims.generateFrameNames('dude', { prefix: 'parado', end: 15, zeroPad: 4}),
+        //DIO frameRate: 8
+        frameRate: 8
     });
 
     this.anims.create({
         key: 'right',
-        frames: this.anims.generateFrameNames('dude', { prefix: 'der', end: 15, zeroPad: 4}),
+        //DIO frames: this.anims.generateFrameNames('dude', { prefix: 'der', end: 15, zeroPad: 4}),
+        frames: this.anims.generateFrameNames('dude', { prefix: 'der', end: 9, zeroPad: 4}),
         frameRate: 10,
         repeat: -1
     });
@@ -258,7 +272,7 @@ function create ()
 
     //  The score
     scoreText = this.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#000' });
-    lifeText = this.add.text(260, 16, 'life: 3', { fontSize: '32px', fill: '#000' });
+    lifeText = this.add.text(160, 160, 'life: 3', { fontSize: '32px', fill: '#000' });
     //  Collide the player and the stars with the platforms
     this.physics.add.collider(player, platforms);
     this.physics.add.collider(stars, platforms);
