@@ -6,12 +6,16 @@ class GameScene extends Phaser.Scene {
     
     preload ()
         {
+            //imagenes
             this.load.image('nivel1', 'assets/nivel1.png');
             this.load.image('ground', 'assets/platform.png');
             this.load.image('star', 'assets/star.png');
             this.load.image('bomb', 'assets/bomb.png');
+
+            //sonidos
             this.load.audio('musicaN1', 'sonidos/nivel1.mp3');
 
+            //personajes
             this.load.atlas('dude', 'assets/dio.png', 'assets/diosprites.json');   //DIO
             //this.load.atlas('dude', 'assets/jojo.png', 'assets/jojosprites.json'); //JOTARO
             
