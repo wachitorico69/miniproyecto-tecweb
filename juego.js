@@ -339,6 +339,98 @@ function startGame() {
         restartGame(); // If game exists, restart it
     }
 }
+//registra nombre y personaje
+function prepareGame(){
+    const menuContainer = document.getElementById('menuContainer');
+    menuContainer.innerHTML = ''; //vacia html
+
+    menuContainer.style.display = 'grid'; // CSS
+    menuContainer.style.gridTemplateColumns = '1fr'; 
+    menuContainer.style.gridGap = '10px';
+
+    const title = document.createElement('h2'); //texto: Name
+    title.textContent = 'Name';
+
+    const alias = document.createElement('textarea');//areatext de alias
+    alias.rows = 1; 
+    alias.cols = 20;
+    alias.textContent = 'insert alias'
+
+    const title2 = document.createElement('h2'); //texto: Choose 
+    title2.textContent = 'Choose';
+
+    const canvas = document.createElement('canvas');//CANVA
+    canvas.width = 400;
+    canvas.height = 300;
+    canvas.id = "myCanvas";
+    canvas.style.backgroundColor = "lightblue";
+    const ctx = canvas.getContext('2d');
+    canvas.addEventListener('dragover', function (e) {
+        e.preventDefault(); 
+        e.dataTransfer.dropEffect = 'move';
+    });
+    canvas.addEventListener('drop', function (e) {
+        e.preventDefault();
+        // Get the drop position
+        const rect = canvas.getBoundingClientRect();
+        const mouseX = e.clientX - rect.left;
+        const mouseY = e.clientY - rect.top;
+
+        // Get the image source from the drag event data
+        const imgSrc = e.dataTransfer.getData('image');
+
+        // Draw the image on the canvas at the drop position
+        const imgElement = new Image();
+        imgElement.src = imgSrc;
+        imgElement.onload = function() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height); // Optional: Clear canvas before drawing new image
+            ctx.drawImage(imgElement, mouseX - 50, mouseY - 50, 100, 100); // Draw image at mouse position
+        };
+    });
+
+    const start = document.createElement('button'); //comenzar juego
+    start.textContent = 'START';
+    start.onclick = () => startGame();
+
+    const backButton = document.createElement('button'); //regresar menu
+    backButton.textContent = 'Back to Menu';
+    backButton.onclick = () => location.reload();
+
+    const img = document.createElement('img'); //imagen DIO
+    img.src = 'assets/dio-panel.gif';  
+    img.alt = 'Dio'; 
+    img.style.width = '150px'; 
+    img.style.height = 'auto';
+    img.style.cursor = 'move';
+    img.setAttribute('draggable', true);
+    img.addEventListener('dragstart', function (e) {
+        e.dataTransfer.setData('image', img.src); // Store the image source in dataTransfer
+        e.dataTransfer.effectAllowed = 'move';
+    });
+
+    const img2 = document.createElement('img'); //imagen JOJO
+    img2.src = 'assets/jojo-panel.gif';  
+    img2.alt = 'JOJO'; 
+    img2.style.width = '150px'; 
+    img2.style.height = 'auto';
+    img2.style.cursor = 'move';
+    img2.setAttribute('draggable', true);
+    img2.addEventListener('dragstart', function (e) {
+        e.dataTransfer.setData('image', img2.src); // Store the image source in dataTransfer
+        e.dataTransfer.effectAllowed = 'move';
+    });
+
+    //appendChild
+    menuContainer.appendChild(title);
+    menuContainer.appendChild(alias);
+    menuContainer.appendChild(title2);
+    menuContainer.appendChild(canvas);
+    menuContainer.appendChild(start);
+    menuContainer.appendChild(backButton);
+    document.body.appendChild(img2); //esta fuera del grid
+    document.body.appendChild(img); //esta fuera del grid
+ 
+}
 //para regresar al menu
 function exitGame() {
     if (window.game) { //evita memory leaks
