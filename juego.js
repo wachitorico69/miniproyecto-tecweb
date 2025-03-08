@@ -334,18 +334,12 @@ function startGame() {
 }
 //para regresar al menu
 function exitGame() {
-    document.getElementById('menuContainer').style.display = 'block';
-    document.getElementById('gameContainer').style.display = 'none';
-
-    if (window.game) {
+    if (window.game) { //evita memory leaks
         window.game.scene.scenes.forEach(scene => scene.scene.stop()); // Stop all scenes
         window.game.destroy(true); // Fully destroy the game
-        const gameContainer = document.getElementById('gameContainer');
-        if (gameContainer) {
-            gameContainer.innerHTML = ''; // Clear any lingering Phaser content
-        }
         window.game = null;
     }
+    location.reload(); //refresca pagina 
 }
 //reinicia el juego para poder usar html
 function restartGame() {
