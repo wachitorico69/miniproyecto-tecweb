@@ -299,12 +299,6 @@ function hitBomb (player, bomb)
 }
 
 //     ********* HTML - MENU *********
-function loadMenu() {
-    document.body.innerHTML = `
-        <h1>My Game</h1>
-        <button onclick="startGame()">Start Game</button>
-    `;
-}
 
 // comienzo del juego mediante html
 function startGame() {
