@@ -84,7 +84,7 @@ class GameScene extends Phaser.Scene {
     create = create; //esta asignando el funcion create al que esta fuera del clase
     update = update;
 }
-//JUEGO-pausa
+// PAUSA
 class PauseScene extends Phaser.Scene {
     constructor() {
         super({ key: 'PauseScene' });
@@ -93,14 +93,46 @@ class PauseScene extends Phaser.Scene {
     create() {
         this.add.text(300, 250, 'Game Paused', { fontSize: '32px', fill: '#fff' });
 
-        this.escKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC); //UNpause game
+        // Opción para reanudar
+        this.add.text(300, 290, 'Resume', { fontSize: '28px', fill: '#fff' })
+            .setInteractive()
+            .on('pointerdown', () => {
+                this.scene.resume('GameScene'); // Reanudar el juego
+                this.scene.stop(); // Detener la escena de pausa
+            });
+
+        // Opción para volver al menú principal
+        this.add.text(300, 330, 'Back to Menu', { fontSize: '28px', fill: '#ff0' })
+            .setInteractive()
+            .on('pointerdown', () => {
+                this.scene.stop('GameScene'); // Detener la escena de juego
+                this.scene.start('MenuScene'); // Volver al menú principal
+            });
+
+        this.escKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC); // Tecla ESC para pausar el juego
     }
 
     update() {
         if (Phaser.Input.Keyboard.JustDown(this.escKey)) {
-            this.scene.resume('GameScene'); // Open pause menu
-            this.scene.stop(); // Pause game
+            this.scene.resume('GameScene'); // Reanudar el juego
+            this.scene.stop(); // Detener la escena de pausa
         }
+    }
+}
+class GameOverS extends Phaser.Scene {
+    constructor() {
+        super({ key: 'GameOverS' });
+    }
+
+    create() {
+        this.add.text(300, 250, 'Game Over', { fontSize: '32px', fill: '#fff' });
+
+        // Opción para reanudar
+        this.add.text(300, 290, 'Back to Menu', { fontSize: '28px', fill: '#fff' })
+            .setInteractive()
+            .on('pointerdown', () => {
+                this.scene.start('MenuScene');
+            });
     }
 }
 
@@ -115,17 +147,20 @@ var config = {
             debug: false
         }
     },
-    scene: [MenuScene, GameScene, RecordsScene, HelpScene, PauseScene] //escenas en el juego (menu,juego)
+    scene: [MenuScene, GameScene, RecordsScene, HelpScene, PauseScene, GameOverS] //escenas en el juego (menu,juego)
 };
+
 
 var player;
 var stars;
 var bombs;
 var platforms;
 var cursors;
-var score = 0;
+var score;
 var gameOver = false;
 var scoreText;
+var life;
+var lifeText;
 
 var game = new Phaser.Game(config);
 
@@ -135,8 +170,9 @@ function preload ()
     this.load.image('ground', 'assets/platform.png');
     this.load.image('star', 'assets/star.png');
     this.load.image('bomb', 'assets/bomb.png');
-    //DIO this.load.atlas('dude', 'assets/dio.png', 'assets/diosprites.json');
-    this.load.atlas('dude', 'assets/jojo.png', 'assets/jojosprites.json');
+    this.load.atlas('dude', 'assets/dio.png', 'assets/diosprites.json');
+    life = 3;
+    score = 0;
 }
 
 function create ()
@@ -163,35 +199,26 @@ function create ()
     player.setBounce(0.2);
     player.setCollideWorldBounds(true);
 
-    //DIO SETTINGS
-    //player.setOrigin(0.5, 0.5); 
-    //player.body.setSize(30, 95).setOffset(10, 10);
-
-    //JOTARO SETTINGS
-    player.setOrigin(0.5, 0.5);
-    player.body.setSize(50, 90).setOffset(20, 10);
+    player.setOrigin(0.5, 0.5); 
+    player.body.setSize(30, 95).setOffset(10, 10);
 
     //  Our player animations, turning, walking left and walking right.
     this.anims.create({
         key: 'left',
-        //DIO frames: this.anims.generateFrameNames('dude', { prefix: 'izq', end: 15, zeroPad: 4}),
-        frames: this.anims.generateFrameNames('dude', { prefix: 'izq', end: 9, zeroPad: 4}),
+        frames: this.anims.generateFrameNames('dude', { prefix: 'izq', end: 15, zeroPad: 4}),
         frameRate: 10,
         repeat: -1
     });
 
     this.anims.create({
         key: 'turn',
-        //DIO frames: this.anims.generateFrameNames('dude', { prefix: 'parado', end: 5, zeroPad: 4}),
-        frames: this.anims.generateFrameNames('dude', { prefix: 'parado', end: 15, zeroPad: 4}),
-        //DIO frameRate: 8
-        frameRate: 8
+        frames: this.anims.generateFrameNames('dude', { prefix: 'parado', end: 5, zeroPad: 4}),
+        frameRate: 10
     });
 
     this.anims.create({
         key: 'right',
-        //DIO frames: this.anims.generateFrameNames('dude', { prefix: 'der', end: 15, zeroPad: 4}),
-        frames: this.anims.generateFrameNames('dude', { prefix: 'der', end: 9, zeroPad: 4}),
+        frames: this.anims.generateFrameNames('dude', { prefix: 'der', end: 15, zeroPad: 4}),
         frameRate: 10,
         repeat: -1
     });
@@ -231,7 +258,7 @@ function create ()
 
     //  The score
     scoreText = this.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#000' });
-
+    lifeText = this.add.text(260, 16, 'life: 3', { fontSize: '32px', fill: '#000' });
     //  Collide the player and the stars with the platforms
     this.physics.add.collider(player, platforms);
     this.physics.add.collider(stars, platforms);
@@ -248,11 +275,6 @@ function create ()
 
 function update ()
 {
-    if (gameOver)
-    {
-        return;
-    }
-
     if (cursors.left.isDown)
     {
         player.setVelocityX(-160);
@@ -275,6 +297,7 @@ function update ()
     if (cursors.up.isDown && player.body.touching.down)
     {
         player.setVelocityY(-330);
+        player.anims.play('saltod', true);
     }
 
     if (Phaser.Input.Keyboard.JustDown(this.escKey)) {
@@ -313,11 +336,25 @@ function collectStar (player, star)
 
 function hitBomb (player, bomb)
 {
-    this.physics.pause();
+    if (life > 0) {
+        player.setTint(0xff0000);
+        life--;
+        lifeText.setText('Life: ' + life);
+        if (life === 0) {
+            this.physics.pause();
+            player.setTint(0xff0000);
+            player.anims.play('daño', true);
+            this.time.delayedCall(1000, () => {
+                this.scene.start('GameOverS');
+            })
+        } else {
+            player.setAlpha(0.5); 
+            this.time.delayedCall(1000, () => { 
+                player.clearTint();
+                player.setAlpha(1); 
+                player.anims.play('turn', true);
+            }, [], this);
+        }
+    }
 
-    player.setTint(0xff0000);
-
-    player.anims.play('daño');
-
-    gameOver = true;
 }
