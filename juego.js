@@ -33,7 +33,9 @@ class GameScene extends Phaser.Scene {
 
             //  Here we create the ground.
             //  Scale it to fit the width of the game (the original sprite is 400x32 in size)
-            platforms.create(400, 568, 'ground').setScale(4).refreshBody();
+            platforms.create(0, 525, 'ground'); 
+            platforms.create(400, 525, 'ground'); 
+            platforms.create(800, 525, 'ground');
 
             //  Now let's create some ledges
             platforms.create(600, 350, 'ground');
