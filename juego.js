@@ -272,7 +272,7 @@ function create ()
 
     //  The score
     scoreText = this.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#000' });
-    lifeText = this.add.text(160, 160, 'life: 3', { fontSize: '32px', fill: '#000' });
+    lifeText = this.add.text(260, 16, 'life: 3', { fontSize: '32px', fill: '#000' });
     //  Collide the player and the stars with the platforms
     this.physics.add.collider(player, platforms);
     this.physics.add.collider(stars, platforms);
