@@ -135,7 +135,8 @@ function preload ()
     this.load.image('ground', 'assets/platform.png');
     this.load.image('star', 'assets/star.png');
     this.load.image('bomb', 'assets/bomb.png');
-    this.load.atlas('dude', 'assets/dio.png', 'assets/diosprites.json');
+    //DIO this.load.atlas('dude', 'assets/dio.png', 'assets/diosprites.json');
+    this.load.atlas('dude', 'assets/jojo2.png', 'assets/jojosprites.json');
 }
 
 function create ()
@@ -162,26 +163,35 @@ function create ()
     player.setBounce(0.2);
     player.setCollideWorldBounds(true);
 
-    player.setOrigin(0.5, 0.5); 
-    player.body.setSize(30, 95).setOffset(10, 10);
+    //DIO SETTINGS
+    //player.setOrigin(0.5, 0.5); 
+    //player.body.setSize(30, 95).setOffset(10, 10);
+
+    //JOTARO SETTINGS
+    player.setOrigin(0.5, 0.5);
+    player.body.setSize(50, 90).setOffset(20, 10);
 
     //  Our player animations, turning, walking left and walking right.
     this.anims.create({
         key: 'left',
-        frames: this.anims.generateFrameNames('dude', { prefix: 'izq', end: 15, zeroPad: 4}),
+        //DIO frames: this.anims.generateFrameNames('dude', { prefix: 'izq', end: 15, zeroPad: 4}),
+        frames: this.anims.generateFrameNames('dude', { prefix: 'izq', end: 9, zeroPad: 4}),
         frameRate: 10,
         repeat: -1
     });
 
     this.anims.create({
         key: 'turn',
-        frames: this.anims.generateFrameNames('dude', { prefix: 'parado', end: 5, zeroPad: 4}),
-        frameRate: 10
+        //DIO frames: this.anims.generateFrameNames('dude', { prefix: 'parado', end: 5, zeroPad: 4}),
+        frames: this.anims.generateFrameNames('dude', { prefix: 'parado', end: 15, zeroPad: 4}),
+        //DIO frameRate: 8
+        frameRate: 8
     });
 
     this.anims.create({
         key: 'right',
-        frames: this.anims.generateFrameNames('dude', { prefix: 'der', end: 15, zeroPad: 4}),
+        //DIO frames: this.anims.generateFrameNames('dude', { prefix: 'der', end: 15, zeroPad: 4}),
+        frames: this.anims.generateFrameNames('dude', { prefix: 'der', end: 9, zeroPad: 4}),
         frameRate: 10,
         repeat: -1
     });
