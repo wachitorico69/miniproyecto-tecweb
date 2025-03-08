@@ -338,7 +338,12 @@ function exitGame() {
     document.getElementById('gameContainer').style.display = 'none';
 
     if (window.game) {
+        window.game.scene.scenes.forEach(scene => scene.scene.stop()); // Stop all scenes
         window.game.destroy(true); // Fully destroy the game
+        const gameContainer = document.getElementById('gameContainer');
+        if (gameContainer) {
+            gameContainer.innerHTML = ''; // Clear any lingering Phaser content
+        }
         window.game = null;
     }
 }
