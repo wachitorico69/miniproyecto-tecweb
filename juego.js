@@ -1,89 +1,164 @@
-//MENU
-class MenuScene extends Phaser.Scene {
-    constructor() {
-        super({ key: 'MenuScene' }); //no funciona sin esto
-    }
-    preload() { //imagenes
-        
-    }
-    create() { 
-        //Play
-        this.add.text(300, 250, 'Start Game', { fontSize: '32px', fill: '#fff' })
-            .setInteractive()
-            .on('pointerdown', () => {
-                this.scene.start('GameScene'); // Switch to the game scene
-            });
-
-        //Record
-        this.add.text(300, 290, 'Records', { fontSize: '32px', fill: '#fff' })
-            .setInteractive()
-            .on('pointerdown', () => {
-                this.scene.start('RecordsScene');// Switch to the game records
-            });
-        
-        //config
-        this.add.text(300, 330, 'Help', { fontSize: '32px', fill: '#fff' })
-            .setInteractive()
-            .on('pointerdown', () => {
-                this.scene.start('HelpScene');// Switch to the game Help (instructions)
-            });
-
-        //config
-        this.add.text(300, 370, 'Exit', { fontSize: '32px', fill: '#fff' })
-            .setInteractive()
-            .on('pointerdown', () => {
-                window.location.href = "about:blank"; // Switch to leave
-            });
-    }
-}
-//MENU-record
-class RecordsScene extends Phaser.Scene {
-    constructor() {
-        super({ key: 'RecordsScene' }); //no funciona sin esto
-    }
-    preload() { //imagenes
-        
-    }
-    create() { 
-    
-        this.add.text(300, 250, 'High Scores:', { fontSize: '32px', fill: '#fff' });//titulo
-
-        this.add.text(300, 290, 'Back', { fontSize: '32px', fill: '#fff' })
-            .setInteractive()
-            .on('pointerdown', () => {
-                this.scene.start('MenuScene'); // Switch to the game menu
-            });
-    }
-}
-//MENU-help
-class HelpScene extends Phaser.Scene {
-    constructor() {
-        super({ key: 'HelpScene' }); //no funciona sin esto
-    }
-    preload() { //imagenes
-        
-    }
-    create() { 
-        
-        this.add.text(300, 250, 'Help:', { fontSize: '32px', fill: '#fff' });//titulo
-
-        this.add.text(300, 290, 'Back', { fontSize: '32px', fill: '#fff' })
-            .setInteractive()
-            .on('pointerdown', () => {
-                this.scene.start('MenuScene'); // Switch to the game menu
-            });
-    }
-}
-
-//JUEGO
+// ******JUEGO******
 class GameScene extends Phaser.Scene {
     constructor() {
         super({ key: 'GameScene' }); //no funciona sin esto
     }
-    preload = preload;
-    create = create; //esta asignando el funcion create al que esta fuera del clase
-    update = update;
+    
+    preload ()
+        {
+            this.load.image('sky', 'assets/sky.png');
+            this.load.image('ground', 'assets/platform.png');
+            this.load.image('star', 'assets/star.png');
+            this.load.image('bomb', 'assets/bomb.png');
+
+            //DIO this.load.atlas('dude', 'assets/dio.png', 'assets/diosprites.json');
+            this.load.atlas('dude', 'assets/jojo.png', 'assets/jojosprites.json');
+
+            this.load.atlas('dude', 'assets/dio.png', 'assets/diosprites.json');
+            life = 3;
+            score = 0;
+
+        }
+    create ()
+        {
+            //  A simple background for our game
+            this.add.image(400, 300, 'sky');
+
+            //  The platforms group contains the ground and the 2 ledges we can jump on
+            platforms = this.physics.add.staticGroup();
+
+            //  Here we create the ground.
+            //  Scale it to fit the width of the game (the original sprite is 400x32 in size)
+            platforms.create(400, 568, 'ground').setScale(2).refreshBody();
+
+            //  Now let's create some ledges
+            platforms.create(600, 400, 'ground');
+            platforms.create(50, 250, 'ground');
+            platforms.create(750, 220, 'ground');
+
+            // The player and its settings
+            player = this.physics.add.sprite(100, 450, 'dude');
+
+            //  Player physics properties. Give the little guy a slight bounce.
+            player.setBounce(0.2);
+            player.setCollideWorldBounds(true);
+
+            //DIO SETTINGS
+            //player.setOrigin(0.5, 0.5); 
+            //player.body.setSize(30, 95).setOffset(10, 10);
+
+            //JOTARO SETTINGS
+            player.setOrigin(0.5, 0.5);
+            player.body.setSize(50, 90).setOffset(20, 10);
+
+            //  Our player animations, turning, walking left and walking right.
+            this.anims.create({
+                key: 'left',
+                //DIO frames: this.anims.generateFrameNames('dude', { prefix: 'izq', end: 15, zeroPad: 4}),
+                frames: this.anims.generateFrameNames('dude', { prefix: 'izq', end: 9, zeroPad: 4}),
+                frameRate: 10,
+                repeat: -1
+            });
+
+            this.anims.create({
+                key: 'turn',
+                //DIO frames: this.anims.generateFrameNames('dude', { prefix: 'parado', end: 5, zeroPad: 4}),
+                frames: this.anims.generateFrameNames('dude', { prefix: 'parado', end: 15, zeroPad: 4}),
+                //DIO frameRate: 8
+                frameRate: 8
+            });
+
+            this.anims.create({
+                key: 'right',
+                //DIO frames: this.anims.generateFrameNames('dude', { prefix: 'der', end: 15, zeroPad: 4}),
+                frames: this.anims.generateFrameNames('dude', { prefix: 'der', end: 9, zeroPad: 4}),
+                frameRate: 10,
+                repeat: -1
+            });
+
+            this.anims.create({
+                key: 'saltod',
+                frames: this.anims.generateFrameNames('dude', { prefix: 'saltod', end: 9, zeroPad: 4}),
+                frameRate: 10,
+                repeat: -1
+            });
+
+            this.anims.create({
+                key: 'daño',
+                frames: [{ key: 'dude', frame: 'daño' }], // Usa un solo frame
+                frameRate: 10,
+                repeat: 0 // No se repite, ya que es un golpe
+            });
+            
+            //  Input Events
+            cursors = this.input.keyboard.createCursorKeys();
+
+            //  Some stars to collect, 12 in total, evenly spaced 70 pixels apart along the x axis
+            stars = this.physics.add.group({
+                key: 'star',
+                repeat: 11,
+                setXY: { x: 12, y: 0, stepX: 70 }
+            });
+
+            stars.children.iterate(function (child) {
+
+                //  Give each star a slightly different bounce
+                child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
+
+            });
+
+            bombs = this.physics.add.group();
+
+            //  The score
+            scoreText = this.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#000' });
+            lifeText = this.add.text(260, 16, 'life: 3', { fontSize: '32px', fill: '#000' });
+            //  Collide the player and the stars with the platforms
+            this.physics.add.collider(player, platforms);
+            this.physics.add.collider(stars, platforms);
+            this.physics.add.collider(bombs, platforms);
+
+            //  Checks to see if the player overlaps with any of the stars, if he does call the collectStar function
+            this.physics.add.overlap(player, stars, collectStar, null, this);
+
+            this.physics.add.collider(player, bombs, hitBomb, null, this);
+            
+            this.escKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC); //pause game
+            
+        }
+    update ()
+        {
+            if (cursors.left.isDown)
+            {
+                player.setVelocityX(-160);
+        
+                player.anims.play('left', true);
+            }
+            else if (cursors.right.isDown)
+            {
+                player.setVelocityX(160);
+        
+                player.anims.play('right', true);
+            }
+            else
+            {
+                player.setVelocityX(0);
+        
+                player.anims.play('turn', true);
+            }
+        
+            if (cursors.up.isDown && player.body.touching.down)
+            {
+                player.setVelocityY(-330);
+                player.anims.play('saltod', true);
+            }
+        
+            if (Phaser.Input.Keyboard.JustDown(this.escKey)) {
+                this.scene.launch('PauseScene'); // Open pause menu
+                this.scene.pause(); // Pause game
+            }
+        }
 }
+
 // PAUSA
 class PauseScene extends Phaser.Scene {
     constructor() {
@@ -105,8 +180,7 @@ class PauseScene extends Phaser.Scene {
         this.add.text(300, 330, 'Back to Menu', { fontSize: '28px', fill: '#ff0' })
             .setInteractive()
             .on('pointerdown', () => {
-                this.scene.stop('GameScene'); // Detener la escena de juego
-                this.scene.start('MenuScene'); // Volver al menú principal
+                exitGame();
             });
 
         this.escKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC); // Tecla ESC para pausar el juego
@@ -119,6 +193,8 @@ class PauseScene extends Phaser.Scene {
         }
     }
 }
+
+//GAMEOVER
 class GameOverS extends Phaser.Scene {
     constructor() {
         super({ key: 'GameOverS' });
@@ -131,25 +207,32 @@ class GameOverS extends Phaser.Scene {
         this.add.text(300, 290, 'Back to Menu', { fontSize: '28px', fill: '#fff' })
             .setInteractive()
             .on('pointerdown', () => {
-                this.scene.start('MenuScene');
+                exitGame();
             });
     }
 }
 
-var config = {
-    type: Phaser.AUTO,
-    width: 800,
-    height: 600,
-    physics: {
-        default: 'arcade',
-        arcade: {
-            gravity: { y: 300 },
-            debug: false
-        }
-    },
-    scene: [MenuScene, GameScene, RecordsScene, HelpScene, PauseScene, GameOverS] //escenas en el juego (menu,juego)
-};
+if (window.game) {
+    window.game.destroy(true); // Destroy previous instance
+    window.game = null;
+}
 
+function startPhaserGame() {
+    window.game = new Phaser.Game({
+        type: Phaser.AUTO,
+        width: 800,
+        height: 600,
+        parent: 'gameContainer',
+        physics: {
+            default: 'arcade',
+            arcade: {
+                gravity: { y: 300 },
+                debug: false
+            }
+        },
+        scene: [GameScene, PauseScene, GameOverS] //escenas en el juego (menu,juego)
+    });
+};
 
 var player;
 var stars;
@@ -162,163 +245,6 @@ var scoreText;
 var life;
 var lifeText;
 
-var game = new Phaser.Game(config);
-
-function preload ()
-{
-    this.load.image('sky', 'assets/sky.png');
-    this.load.image('ground', 'assets/platform.png');
-    this.load.image('star', 'assets/star.png');
-    this.load.image('bomb', 'assets/bomb.png');
-
-    //DIO this.load.atlas('dude', 'assets/dio.png', 'assets/diosprites.json');
-    this.load.atlas('dude', 'assets/jojo.png', 'assets/jojosprites.json');
-
-    this.load.atlas('dude', 'assets/dio.png', 'assets/diosprites.json');
-    life = 3;
-    score = 0;
-
-}
-
-function create ()
-{
-    //  A simple background for our game
-    this.add.image(400, 300, 'sky');
-
-    //  The platforms group contains the ground and the 2 ledges we can jump on
-    platforms = this.physics.add.staticGroup();
-
-    //  Here we create the ground.
-    //  Scale it to fit the width of the game (the original sprite is 400x32 in size)
-    platforms.create(400, 568, 'ground').setScale(2).refreshBody();
-
-    //  Now let's create some ledges
-    platforms.create(600, 400, 'ground');
-    platforms.create(50, 250, 'ground');
-    platforms.create(750, 220, 'ground');
-
-    // The player and its settings
-    player = this.physics.add.sprite(100, 450, 'dude');
-
-    //  Player physics properties. Give the little guy a slight bounce.
-    player.setBounce(0.2);
-    player.setCollideWorldBounds(true);
-
-    //DIO SETTINGS
-    //player.setOrigin(0.5, 0.5); 
-    //player.body.setSize(30, 95).setOffset(10, 10);
-
-    //JOTARO SETTINGS
-    player.setOrigin(0.5, 0.5);
-    player.body.setSize(50, 90).setOffset(20, 10);
-
-    //  Our player animations, turning, walking left and walking right.
-    this.anims.create({
-        key: 'left',
-        //DIO frames: this.anims.generateFrameNames('dude', { prefix: 'izq', end: 15, zeroPad: 4}),
-        frames: this.anims.generateFrameNames('dude', { prefix: 'izq', end: 9, zeroPad: 4}),
-        frameRate: 10,
-        repeat: -1
-    });
-
-    this.anims.create({
-        key: 'turn',
-        //DIO frames: this.anims.generateFrameNames('dude', { prefix: 'parado', end: 5, zeroPad: 4}),
-        frames: this.anims.generateFrameNames('dude', { prefix: 'parado', end: 15, zeroPad: 4}),
-        //DIO frameRate: 8
-        frameRate: 8
-    });
-
-    this.anims.create({
-        key: 'right',
-        //DIO frames: this.anims.generateFrameNames('dude', { prefix: 'der', end: 15, zeroPad: 4}),
-        frames: this.anims.generateFrameNames('dude', { prefix: 'der', end: 9, zeroPad: 4}),
-        frameRate: 10,
-        repeat: -1
-    });
-
-    this.anims.create({
-        key: 'saltod',
-        frames: this.anims.generateFrameNames('dude', { prefix: 'saltod', end: 9, zeroPad: 4}),
-        frameRate: 10,
-        repeat: -1
-    });
-
-    this.anims.create({
-        key: 'daño',
-        frames: [{ key: 'dude', frame: 'daño' }], // Usa un solo frame
-        frameRate: 10,
-        repeat: 0 // No se repite, ya que es un golpe
-    });
-    
-    //  Input Events
-    cursors = this.input.keyboard.createCursorKeys();
-
-    //  Some stars to collect, 12 in total, evenly spaced 70 pixels apart along the x axis
-    stars = this.physics.add.group({
-        key: 'star',
-        repeat: 11,
-        setXY: { x: 12, y: 0, stepX: 70 }
-    });
-
-    stars.children.iterate(function (child) {
-
-        //  Give each star a slightly different bounce
-        child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
-
-    });
-
-    bombs = this.physics.add.group();
-
-    //  The score
-    scoreText = this.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#000' });
-    lifeText = this.add.text(260, 16, 'life: 3', { fontSize: '32px', fill: '#000' });
-    //  Collide the player and the stars with the platforms
-    this.physics.add.collider(player, platforms);
-    this.physics.add.collider(stars, platforms);
-    this.physics.add.collider(bombs, platforms);
-
-    //  Checks to see if the player overlaps with any of the stars, if he does call the collectStar function
-    this.physics.add.overlap(player, stars, collectStar, null, this);
-
-    this.physics.add.collider(player, bombs, hitBomb, null, this);
-    
-    this.escKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC); //pause game
-    
-}
-
-function update ()
-{
-    if (cursors.left.isDown)
-    {
-        player.setVelocityX(-160);
-
-        player.anims.play('left', true);
-    }
-    else if (cursors.right.isDown)
-    {
-        player.setVelocityX(160);
-
-        player.anims.play('right', true);
-    }
-    else
-    {
-        player.setVelocityX(0);
-
-        player.anims.play('turn', true);
-    }
-
-    if (cursors.up.isDown && player.body.touching.down)
-    {
-        player.setVelocityY(-330);
-        player.anims.play('saltod', true);
-    }
-
-    if (Phaser.Input.Keyboard.JustDown(this.escKey)) {
-        this.scene.launch('PauseScene'); // Open pause menu
-        this.scene.pause(); // Pause game
-    }
-}
 
 function collectStar (player, star)
 {
@@ -370,5 +296,42 @@ function hitBomb (player, bomb)
             }, [], this);
         }
     }
+}
 
+//     ********* HTML - MENU *********
+function loadMenu() {
+    document.body.innerHTML = `
+        <h1>My Game</h1>
+        <button onclick="startGame()">Start Game</button>
+    `;
+}
+
+// comienzo del juego mediante html
+function startGame() {
+    document.getElementById('menuContainer').style.display = 'none';
+    document.getElementById('gameContainer').style.display = 'block';
+
+    if (!window.game) {
+        startPhaserGame(); // Start Phaser only once
+    } else {
+        restartGame(); // If game exists, restart it
+    }
+}
+//para regresar al menu
+function exitGame() {
+    document.getElementById('menuContainer').style.display = 'block';
+    document.getElementById('gameContainer').style.display = 'none';
+
+    if (window.game) {
+        window.game.destroy(true); // Fully destroy the game
+        window.game = null;
+    }
+}
+//reinicia el juego para poder usar html
+function restartGame() {
+    if (window.game) {
+        window.game.destroy(true); // Completely destroy Phaser instance
+        window.game = null;
+    }
+    startPhaserGame(); // Create a fresh instance
 }

@@ -1,0 +1,8 @@
+body {
+    margin: 0;
+    align-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+#gameCanvas { display: none; } /* Hide game at start */
