@@ -10,6 +10,7 @@ class GameScene extends Phaser.Scene {
             this.load.image('ground', 'assets/platform.png');
             this.load.image('star', 'assets/star.png');
             this.load.image('bomb', 'assets/bomb.png');
+            this.load.audio('musicaN1', 'sonidos/nivel1.mp3');
 
             this.load.atlas('dude', 'assets/dio.png', 'assets/diosprites.json');   //DIO
             //this.load.atlas('dude', 'assets/jojo.png', 'assets/jojosprites.json'); //JOTARO
@@ -22,6 +23,10 @@ class GameScene extends Phaser.Scene {
         {
             //  A simple background for our game
             this.add.image(480, 269, 'nivel1');
+
+            //música nivel
+            this.musicaN1 = this.sound.add('musicaN1');
+            this.musicaN1.play();
 
             //  The platforms group contains the ground and the 2 ledges we can jump on
             platforms = this.physics.add.staticGroup();
