@@ -136,7 +136,7 @@ function preload ()
     this.load.image('star', 'assets/star.png');
     this.load.image('bomb', 'assets/bomb.png');
     //DIO this.load.atlas('dude', 'assets/dio.png', 'assets/diosprites.json');
-    this.load.atlas('dude', 'assets/jojo2.png', 'assets/jojosprites.json');
+    this.load.atlas('dude', 'assets/jojo.png', 'assets/jojosprites.json');
 }
 
 function create ()
