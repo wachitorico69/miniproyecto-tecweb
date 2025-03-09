@@ -42,14 +42,12 @@ class GameScene extends Phaser.Scene {
 
             //  Here we create the ground.
             //  Scale it to fit the width of the game (the original sprite is 400x32 in size)
-            platforms.create(0, 525, 'ground'); 
-            platforms.create(400, 525, 'ground'); 
-            platforms.create(800, 525, 'ground');
+            platforms.create(0, 525, 'ground'); platforms.create(400, 525, 'ground'); platforms.create(800, 525, 'ground');
 
             //  Now let's create some ledges
             platforms.create(600, 350, 'ground');
             platforms.create(50, 250, 'ground');
-            platforms.create(750, 220, 'ground');
+            platforms.create(775, 220, 'ground');
 
             // The player and its settings
             player = this.physics.add.sprite(100, 450, 'dude');
@@ -142,8 +140,8 @@ class GameScene extends Phaser.Scene {
             //  Some cherrys to collect, 12 in total, evenly spaced 70 pixels apart along the x axis
             cherrys = this.physics.add.group({
                 key: 'cherry',
-                repeat: 11,
-                setXY: { x: 12, y: 0, stepX: 70 }
+                repeat: 14,
+                setXY: { x: 12, y: 0, stepX: 65 }
             });
 
             cherrys.children.iterate(function (child) {
@@ -337,25 +335,28 @@ function collectCherry (player, cherry)
 
 function hitKnife (player, knife)
 {
-    if (life > 0) {
-        player.setTint(0xff0000);
-        life--;
-        lifeText.setText('Life: ' + life);
-        if (life === 0) {
-            this.physics.pause();
-            player.setTint(0xff0000);
-            player.anims.play('daño', true);
-            this.time.delayedCall(1000, () => {
-                this.scene.start('GameOverS');
-            })
-        } else {
-            player.setAlpha(0.5); 
-            this.time.delayedCall(1000, () => { 
-                player.clearTint();
-                player.setAlpha(1); 
-                player.anims.play('turn', true);
-            }, [], this);
-        }
+    if (player.invulnerable || life <= 0) {
+        return; // Si el jugador es invulnerable, no hacer nada
+    }
+
+    player.invulnerable = true; // Activar invulnerabilidad temporal
+    player.setTint(0xff0000);
+    life--;
+    lifeText.setText('Life: ' + life);
+
+    if (life === 0) {
+        this.physics.pause();
+        player.anims.play('daño', true);
+        this.time.delayedCall(1000, () => {
+            this.scene.start('GameOverS');
+        });
+    } else {
+        player.setAlpha(0.5);
+        this.time.delayedCall(1000, () => { 
+            player.clearTint();
+            player.setAlpha(1);
+            player.invulnerable = false; // Restaurar vulnerabilidad después de 1 segundo
+        }, [], this);
     }
 }
 
