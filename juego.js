@@ -205,9 +205,12 @@ class GameScene extends Phaser.Scene {
             if (cursors.up.isDown && player.body.touching.down)
             {
                 player.setVelocityY(-330);
-                    
-                player.anims.play('saltod', true);  //DIO
-                //player.anims.play('saltoi', true);  //JOTARO
+                
+                if (modelo === 1) {
+                    player.anims.play('saltoi', true);  //JOTARO
+                } else {
+                    player.anims.play('saltod', true);  //DIO
+                }
             }
             
             if (Phaser.Input.Keyboard.JustDown(this.escKey)) {
