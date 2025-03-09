@@ -156,9 +156,11 @@ class GameScene extends Phaser.Scene {
 
             knives = this.physics.add.group();
 
-            //  The score
-            scoreText = this.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#000' });
-            lifeText = this.add.text(260, 16, 'life: 3', { fontSize: '32px', fill: '#000' });
+            
+            let colorTexto = modelo === 1 ? '#9400ff' : '#fbff11'; 
+            // The score
+            scoreText = this.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: colorTexto });
+            lifeText = this.add.text(260, 16, 'life: 3', { fontSize: '32px', fill: colorTexto });
             //  Collide the player and the cherrys with the platforms
             this.physics.add.collider(player, platforms);
             this.physics.add.collider(cherrys, platforms);
@@ -412,7 +414,7 @@ function prepareGame() {
     const alias = document.createElement('textarea');
     alias.rows = 1;
     alias.cols = 20;
-    alias.textContent = 'insert alias';
+    alias.placeholder = 'insert alias';
     menuContainer.appendChild(alias);
 
     // Segundo título
@@ -423,7 +425,7 @@ function prepareGame() {
     // Canvas
     const canvas = document.createElement('canvas');
     canvas.width = 400;
-    canvas.height = 300;
+    canvas.height = 200;
     canvas.id = "myCanvas";
     canvas.style.backgroundColor = "lightblue";
     menuContainer.appendChild(canvas);
