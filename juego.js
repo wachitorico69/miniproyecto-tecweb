@@ -18,7 +18,7 @@ class GameScene extends Phaser.Scene {
 
             //personajes
             if(modelo === 1){
-                this.load.atlas('dude', 'assets/jojo.png', 'assets/jojosprites.json');
+                this.load.atlas('dude', 'assets/jojo.png', 'assets/jojosprites.json'); //JOTARO
             }
             else if(modelo === 2){
                 this.load.atlas('dude', 'assets/dio.png', 'assets/diosprites.json');   //DIO
@@ -53,58 +53,81 @@ class GameScene extends Phaser.Scene {
 
             // The player and its settings
             player = this.physics.add.sprite(100, 450, 'dude');
+            player.setCollideWorldBounds(true); //choca con los limites
 
-            //  Player physics properties. Give the little guy a slight bounce.
-            //player.setBounce(0.2);
-            player.setCollideWorldBounds(true);
+            // Animaciones y hitboxes distintos según el personaje
+            if(modelo === 1) { //JOTARO
+                player.setOrigin(0.5, 0.5);
+                player.body.setSize(50, 90).setOffset(20, 10);
 
-            //DIO SETTINGS
-            player.setOrigin(0.5, 0.5); 
-            player.body.setSize(30, 95).setOffset(10, 10);
-
-            //JOTARO SETTINGS
-            //player.setOrigin(0.5, 0.5);
-            //player.body.setSize(50, 90).setOffset(20, 10);
-            
-            //  Our player animations, turning, walking left and walking right.
-            this.anims.create({
-                key: 'left',
-                frames: this.anims.generateFrameNames('dude', { prefix: 'izq', end: 15, zeroPad: 4}), //DIO
-                //frames: this.anims.generateFrameNames('dude', { prefix: 'izq', end: 9, zeroPad: 4}),  //JOTARO
-                frameRate: 10,
-                repeat: -1
-            });
-
-            this.anims.create({
-                key: 'turn',
-                frames: this.anims.generateFrameNames('dude', { prefix: 'parado', end: 5, zeroPad: 4}),  //DIO
-                //frames: this.anims.generateFrameNames('dude', { prefix: 'parado', end: 15, zeroPad: 4}),  //JOTARO
-                frameRate: 8
-            });
-
-            this.anims.create({
-                key: 'right',
-                frames: this.anims.generateFrameNames('dude', { prefix: 'der', end: 15, zeroPad: 4}),  //DIO
-                //frames: this.anims.generateFrameNames('dude', { prefix: 'der', end: 9, zeroPad: 4}),  //JOTARO
-                frameRate: 10,
-                repeat: -1
+                this.anims.create({
+                    key: 'left',
+                    frames: this.anims.generateFrameNames('dude', { prefix: 'izq', end: 9, zeroPad: 4}),  //JOTARO
+                    frameRate: 10,
+                    repeat: -1
                 });
-
-            this.anims.create({
-                key: 'saltoi',
-                frames: this.anims.generateFrameNames('dude', { prefix: 'saltoi', end: 9, zeroPad: 4 }),  //DIO
-                //frames: this.anims.generateFrameNames('dude', { prefix: 'saltoi', end: 10, zeroPad: 4 }), //JOTARO
-                frameRate: 10,
-                repeat: 0
-            });
     
-            this.anims.create({
-                key: 'saltod',
-                frames: this.anims.generateFrameNames('dude', { prefix: 'saltod', end: 9, zeroPad: 4 }),  //DIO
-                //frames: this.anims.generateFrameNames('dude', { prefix: 'saltod', end: 10, zeroPad: 4 }),  //JOTARO
-                frameRate: 10,
-                repeat: 0
-            });
+                this.anims.create({
+                    key: 'turn',
+                    frames: this.anims.generateFrameNames('dude', { prefix: 'parado', end: 15, zeroPad: 4}),  //JOTARO
+                    frameRate: 8
+                });
+    
+                this.anims.create({
+                    key: 'right',
+                    frames: this.anims.generateFrameNames('dude', { prefix: 'der', end: 9, zeroPad: 4}),  //JOTARO
+                    frameRate: 10,
+                    repeat: -1
+                });
+    
+                this.anims.create({
+                    key: 'saltoi',
+                    frames: this.anims.generateFrameNames('dude', { prefix: 'saltoi', end: 10, zeroPad: 4 }), //JOTARO
+                    frameRate: 10,
+                    repeat: 0
+                });
+        
+                this.anims.create({
+                    key: 'saltod',
+                    frames: this.anims.generateFrameNames('dude', { prefix: 'saltod', end: 10, zeroPad: 4 }),  //JOTARO
+                    frameRate: 10,
+                    repeat: 0
+                });
+            }
+            if(modelo === 2) { //DIO
+                player.setOrigin(0.5, 0.5); 
+                player.body.setSize(30, 95).setOffset(10, 10);
+
+                this.anims.create({
+                    key: 'left',
+                    frames: this.anims.generateFrameNames('dude', { prefix: 'izq', end: 15, zeroPad: 4}), //DIO
+                    frameRate: 10,
+                    repeat: -1
+                });
+                this.anims.create({
+                    key: 'turn',
+                    frames: this.anims.generateFrameNames('dude', { prefix: 'parado', end: 5, zeroPad: 4}),  //DIO
+                    frameRate: 8
+                });
+                this.anims.create({
+                    key: 'right',
+                    frames: this.anims.generateFrameNames('dude', { prefix: 'der', end: 15, zeroPad: 4}),  //DIO
+                    frameRate: 10,
+                    repeat: -1
+                });
+                this.anims.create({
+                    key: 'saltoi',
+                    frames: this.anims.generateFrameNames('dude', { prefix: 'saltoi', end: 9, zeroPad: 4 }),  //DIO
+                    frameRate: 10,
+                    repeat: 0
+                });
+                this.anims.create({
+                    key: 'saltod',
+                    frames: this.anims.generateFrameNames('dude', { prefix: 'saltod', end: 9, zeroPad: 4 }),  //DIO
+                    frameRate: 10,
+                    repeat: 0
+                });
+            }
 
             this.anims.create({
                 key: 'daño',
