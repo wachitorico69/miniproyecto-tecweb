@@ -10,8 +10,8 @@ class GameScene extends Phaser.Scene {
             //imagenes
             this.load.image('nivel1', 'assets/nivel1.png');
             this.load.image('ground', 'assets/platform.png');
-            this.load.image('star', 'assets/star.png');
-            this.load.image('bomb', 'assets/bomb1.png');
+            this.load.image('cherry', 'assets/cherry.png');
+            this.load.image('knife', 'assets/knife.png');
 
             //sonidos
             this.load.audio('musicaN1', 'sonidos/nivel1.mp3');
@@ -116,34 +116,34 @@ class GameScene extends Phaser.Scene {
             //  Input Events
             cursors = this.input.keyboard.createCursorKeys();
 
-            //  Some stars to collect, 12 in total, evenly spaced 70 pixels apart along the x axis
-            stars = this.physics.add.group({
-                key: 'star',
+            //  Some cherrys to collect, 12 in total, evenly spaced 70 pixels apart along the x axis
+            cherrys = this.physics.add.group({
+                key: 'cherry',
                 repeat: 11,
                 setXY: { x: 12, y: 0, stepX: 70 }
             });
 
-            stars.children.iterate(function (child) {
+            cherrys.children.iterate(function (child) {
 
-                //  Give each star a slightly different bounce
+                //  Give each cherry a slightly different bounce
                 child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
 
             });
 
-            bombs = this.physics.add.group();
+            knives = this.physics.add.group();
 
             //  The score
             scoreText = this.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#000' });
             lifeText = this.add.text(260, 16, 'life: 3', { fontSize: '32px', fill: '#000' });
-            //  Collide the player and the stars with the platforms
+            //  Collide the player and the cherrys with the platforms
             this.physics.add.collider(player, platforms);
-            this.physics.add.collider(stars, platforms);
-            this.physics.add.collider(bombs, platforms);
+            this.physics.add.collider(cherrys, platforms);
+            this.physics.add.collider(knives, platforms);
 
-            //  Checks to see if the player overlaps with any of the stars, if he does call the collectStar function
-            this.physics.add.overlap(player, stars, collectStar, null, this);
+            //  Checks to see if the player overlaps with any of the cherrys, if he does call the collectCherry function
+            this.physics.add.overlap(player, cherrys, collectCherry, null, this);
 
-            this.physics.add.collider(player, bombs, hitBomb, null, this);
+            this.physics.add.collider(player, knives, hitKnife, null, this);
             
             this.escKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC); //pause game
             
@@ -264,7 +264,7 @@ function startPhaserGame() {
             default: 'arcade',
             arcade: {
                 gravity: { y: 300 },
-                debug: true
+                debug: false
             }
         },
         scene: [GameScene, PauseScene, GameOverS] //escenas en el juego (menu,juego)
@@ -272,8 +272,8 @@ function startPhaserGame() {
 };
 
 var player;
-var stars;
-var bombs;
+var cherrys;
+var knives;
 var platforms;
 var cursors;
 var score;
@@ -283,18 +283,18 @@ var life;
 var lifeText;
 
 
-function collectStar (player, star)
+function collectCherry (player, cherry)
 {
-    star.disableBody(true, true);
+    cherry.disableBody(true, true);
 
     //  Add and update the score
     score += 10;
     scoreText.setText('Score: ' + score);
 
-    if (stars.countActive(true) === 0)
+    if (cherrys.countActive(true) === 0)
     {
-        //  A new batch of stars to collect
-        stars.children.iterate(function (child) {
+        //  A new batch of cherrys to collect
+        cherrys.children.iterate(function (child) {
 
             child.enableBody(true, child.x, 0, true, true);
 
@@ -302,17 +302,17 @@ function collectStar (player, star)
 
         var x = (player.x < 400) ? Phaser.Math.Between(400, 800) : Phaser.Math.Between(0, 400);
 
-        var bomb = bombs.create(x, 16, 'bomb');
-        bomb.setBounce(1);
-        bomb.setCollideWorldBounds(true);
-        bomb.setVelocity(Phaser.Math.Between(-200, 200), 20);
-        bomb.allowGravity = false;
+        var knife = knives.create(x, 16, 'knife');
+        knife.setBounce(1);
+        knife.setCollideWorldBounds(true);
+        knife.setVelocity(Phaser.Math.Between(-200, 200), 20);
+        knife.allowGravity = false;
 
-        bomb.setAngularVelocity(Phaser.Math.Between(-200, 200)); //hace que el cuchillo rote
+        knife.setAngularVelocity(Phaser.Math.Between(-200, 200)); //hace que el cuchillo rote
     }
 }
 
-function hitBomb (player, bomb)
+function hitKnife (player, knife)
 {
     if (life > 0) {
         player.setTint(0xff0000);
