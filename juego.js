@@ -12,6 +12,7 @@ class GameScene extends Phaser.Scene {
             this.load.image('ground', 'assets/platform.png');
             this.load.image('cherry', 'assets/cherry.png');
             this.load.image('knife', 'assets/knife.png');
+            this.load.atlas('iggy', 'assets/iggy.png', 'assets/iggysprites.json');
 
             //sonidos
             this.load.audio('musicaN1', 'sonidos/nivel1.mp3');
@@ -608,7 +609,7 @@ function credits(){
     const integrantes = [
         { nombre: "Richard Allen Campos Acero", img: "assets/chris.jpg" },
         { nombre: "Christopher Martínez González", img: "assets/chris.jpg" },
-        { nombre: "Dario Miguel Moreno González", img: "assets/chris.jpg" }
+        { nombre: "Dario Miguel Moreno González", img: "assets/Dario.jpg" }
     ];
 
     const integrantesContainer = document.createElement('div');
