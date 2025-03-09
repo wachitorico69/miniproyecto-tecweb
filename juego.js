@@ -10,7 +10,7 @@ class GameScene extends Phaser.Scene {
             this.load.image('nivel1', 'assets/nivel1.png');
             this.load.image('ground', 'assets/platform.png');
             this.load.image('star', 'assets/star.png');
-            this.load.image('bomb', 'assets/bomb.png');
+            this.load.image('bomb', 'assets/bomb1.png');
 
             //sonidos
             this.load.audio('musicaN1', 'sonidos/nivel1.mp3');
@@ -259,7 +259,7 @@ function startPhaserGame() {
             default: 'arcade',
             arcade: {
                 gravity: { y: 300 },
-                debug: false
+                debug: true
             }
         },
         scene: [GameScene, PauseScene, GameOverS] //escenas en el juego (menu,juego)
@@ -303,6 +303,7 @@ function collectStar (player, star)
         bomb.setVelocity(Phaser.Math.Between(-200, 200), 20);
         bomb.allowGravity = false;
 
+        bomb.setAngularVelocity(Phaser.Math.Between(-200, 200)); //hace que el cuchillo rote
     }
 }
 
