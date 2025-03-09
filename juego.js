@@ -337,6 +337,11 @@ function startGame() {
     document.getElementById('menuContainer').style.display = 'none';
     document.getElementById('gameContainer').style.display = 'block';
 
+    const images = document.body.getElementsByTagName('img'); //esconde imagenes
+    for (let img of images) {
+        img.style.display = 'none'; // Hide each image
+    }
+
     if (!window.game) {
         startPhaserGame(); // Start Phaser only once
     } else {
