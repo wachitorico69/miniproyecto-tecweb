@@ -107,7 +107,7 @@ canvas {
     padding: 20px;
     border-collapse: collapse;
     text-align: center;
-    font-size: 50px;
+    font-size: 16px;
 }
 
 #recordsTable th, #recordsTable td {
