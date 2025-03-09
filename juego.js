@@ -534,3 +534,25 @@ function help(){
     menuContainer.appendChild(title);
     menuContainer.appendChild(backButton);
 }
+//creditos
+function credits(){
+    const menuContainer = document.getElementById('menuContainer');
+    menuContainer.innerHTML = ''; 
+
+    const title = document.createElement('h1');
+    title.textContent = 'Credits';
+
+    const textb = document.createElement('h3');
+    textb.textContent = 'Richard Allen Campos Acero\nChristopher Martínez González\nDario Miguel Moreno González';
+    textb.style.whiteSpace = 'pre-line';
+
+    const backButton = document.createElement('button');
+    backButton.textContent = 'Back to Menu';
+    backButton.onclick = () => location.reload();
+
+    // appendChild
+    menuContainer.appendChild(title);
+    menuContainer.appendChild(textb);
+    menuContainer.appendChild(backButton);
+}
+
