@@ -3,6 +3,7 @@ body {
     font-family: 'SF Fedora', sans-serif;
     margin: 0;
     padding: 0;
+    text-align: center;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -27,28 +28,28 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background: rgba(204, 0, 255, 0.2); /* Morado transparente */
+    background: rgba(204, 0, 255, 0.2); 
     padding: 30px;
     border-radius: 15px;
-    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.5); /* Sombra para efecto 3D */
-    border: 4px solid #9400ff; /* Borde morado brillante */
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.5); 
+    border: 4px solid #9400ff; 
 }
 
 /* Efecto de brillo en el borde */
 #menuContainer:hover {
-    border-color: #d400ff; /* Hace que brille más en hover */
-    box-shadow: 0px 0px 20px #d400ff; /* Brillo en el borde */
+    border-color: #d400ff; 
+    box-shadow: 0px 0px 20px #d400ff; 
 }
 /* Títulos principales */
 #menuContainer h1, #menuContainer h2 {
     color: white;
-    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.8); /* Sombra para resaltar el texto */
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.8); 
     margin-bottom: 10px;
 }
 
 /* Estilo para el título principal */
 #menuContainer h1 {
-    font-size: 4em; /* Aumenté el tamaño del título principal */
+    font-size: 4em; 
     margin-bottom: 30px;
     color: #ff23da;
 }
@@ -56,13 +57,13 @@ body {
 /* Estilo para los botones */
 #menuContainer button {
     font-family: 'SF Fedora', sans-serif;
-    font-size: 2em; /* Aumenté el tamaño de la fuente en los botones */
-    padding: 20px 40px; /* Aumenté el padding para hacer los botones más grandes */
-    margin: 15px; /* Aumenté el espacio entre los botones */
+    font-size: 2em;
+    padding: 20px 40px; 
+    margin: 15px; 
     background-color: #58deff;
     color: white;
     border: none;
-    border-radius: 10px; /* Hice los bordes más redondeados */
+    border-radius: 10px; 
     cursor: pointer;
     transition: background-color 0.3s ease, transform 0.3s ease;
 }
@@ -88,6 +89,41 @@ canvas {
     margin-top: 20px;
     border: 2px solid #ddd;
     border-radius: 8px;
+}
+
+#team {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); 
+    gap: 10px;
+}
+#team img{
+    width: 150px;
+    height: 150px;
+}
+
+#recordsTable {
+    width: 100%;
+    margin: 20px;
+    padding: 20px;
+    border-collapse: collapse;
+    text-align: center;
+    font-size: 50px;
+}
+
+#recordsTable th, #recordsTable td {
+    border: 1px solid turquoise;
+    padding: 10px;
+}
+
+#recordsTable th {
+    background-color: #9400ff;
+    color: #ff23da;
+}
+
+#recordsTable tr:hover {
+    background-color: yellow;
+    cursor: pointer;
+    color: #58deff;
 }
 
 

@@ -53,6 +53,8 @@ class GameScene extends Phaser.Scene {
             player = this.physics.add.sprite(100, 450, 'dude');
             player.setCollideWorldBounds(true); //choca con los limites
 
+            playerName = document.querySelector('textarea').value || "No name"; // Guardar el nombre
+            console.log(`Jugador: ${playerName}`);
             // Animaciones y hitboxes distintos según el personaje
             if(modelo === 1) { //JOTARO
                 player.setOrigin(0.5, 0.5);
@@ -302,6 +304,7 @@ var gameOver = false;
 var scoreText;
 var life;
 var lifeText;
+let playerName = '';
 
 
 function collectCherry (player, cherry)
@@ -343,10 +346,9 @@ function hitKnife (player, knife)
     player.setTint(0xff0000);
     life--;
     lifeText.setText('Life: ' + life);
-
+    player.anims.play('daño', true);
     if (life === 0) {
-        this.physics.pause();
-        player.anims.play('daño', true);
+        saveRecord(playerName, score);
         this.time.delayedCall(1000, () => {
             this.scene.start('GameOverS');
         });
@@ -358,6 +360,16 @@ function hitKnife (player, knife)
             player.invulnerable = false; // Restaurar vulnerabilidad después de 1 segundo
         }, [], this);
     }
+}
+function saveRecord(name, score) {
+    let records = JSON.parse(localStorage.getItem("gameRecords")) || [];
+
+    // Guardar solo si el puntaje es mayor al mínimo registrado o si hay menos de 5 récords
+    records.push({ name, score });
+    records.sort((a, b) => b.score - a.score); // Ordenar de mayor a menor
+    records = records.slice(0, 10); // Mantener solo los 5 mejores
+
+    localStorage.setItem("gameRecords", JSON.stringify(records));
 }
 
 //     ********* HTML - MENU *********
@@ -503,22 +515,64 @@ function restartGame() {
     }
     startPhaserGame(); // Create a fresh instance
 }
-//records de personas
-function records(){
-    const menuContainer = document.getElementById('menuContainer');
-    menuContainer.innerHTML = ''; 
+function records() {
+    const recordsP = JSON.parse(localStorage.getItem("gameRecords")) || [];
 
-    const title = document.createElement('h2');
+    const menuContainer = document.getElementById('menuContainer');
+    menuContainer.innerHTML = ''; // Limpiar pantalla
+
+    const title = document.createElement('h1');
     title.textContent = 'Records';
+
+    // Crear la tabla
+    const table = document.createElement('table');
+    table.id = 'recordsTable'; // ID para aplicar estilos en CSS
+
+    // Crear encabezados
+    const thead = document.createElement('thead');
+    const headerRow = document.createElement('tr');
+    ['#', 'Name', 'Score'].forEach(text => {
+        const th = document.createElement('th');
+        th.textContent = text;
+        headerRow.appendChild(th);
+    });
+    thead.appendChild(headerRow);
+    table.appendChild(thead);
+
+    // Crear cuerpo de la tabla
+    const tbody = document.createElement('tbody');
+    recordsP.forEach((record, index) => {
+        const row = document.createElement('tr');
+
+        // Columnas
+        const numberCell = document.createElement('td');
+        numberCell.textContent = index + 1;
+
+        const nameCell = document.createElement('td');
+        nameCell.textContent = record.name;
+
+        const scoreCell = document.createElement('td');
+        scoreCell.textContent = record.score;
+
+        // Agregar celdas a la fila
+        row.appendChild(numberCell);
+        row.appendChild(nameCell);
+        row.appendChild(scoreCell);
+
+        tbody.appendChild(row);
+    });
+
+    table.appendChild(tbody);
 
     const backButton = document.createElement('button');
     backButton.textContent = 'Back to Menu';
     backButton.onclick = () => location.reload();
 
-    //appendChild
     menuContainer.appendChild(title);
+    menuContainer.appendChild(table);
     menuContainer.appendChild(backButton);
 }
+
 //ayuda
 function help(){
     const menuContainer = document.getElementById('menuContainer');
@@ -544,8 +598,36 @@ function credits(){
     title.textContent = 'Credits';
 
     const textb = document.createElement('h3');
-    textb.textContent = 'Richard Allen Campos Acero\nChristopher Martínez González\nDario Miguel Moreno González';
+    textb.textContent = 'Tecnologías Web\nIntegrantes:';
     textb.style.whiteSpace = 'pre-line';
+
+    // Lista de integrantes con imágenes
+    const integrantes = [
+        { nombre: "Richard Allen Campos Acero", img: "assets/chris.jpg" },
+        { nombre: "Christopher Martínez González", img: "assets/chris.jpg" },
+        { nombre: "Dario Miguel Moreno González", img: "assets/chris.jpg" }
+    ];
+
+    const integrantesContainer = document.createElement('div');
+    integrantesContainer.id = "team";
+    integrantes.forEach(integrante => {
+        const integranteDiv = document.createElement('div');
+
+        const img = document.createElement('img');
+        img.src = integrante.img;
+        img.alt = integrante.nombre;
+
+        const name = document.createElement('p');
+        name.textContent = integrante.nombre;
+
+        integranteDiv.appendChild(img);
+        integranteDiv.appendChild(name);
+        integrantesContainer.appendChild(integranteDiv);
+    });
+
+    // Fecha
+    const fecha = document.createElement('p');
+    fecha.textContent = 'Fecha: 13/03/2025';
 
     const backButton = document.createElement('button');
     backButton.textContent = 'Back to Menu';
@@ -554,6 +636,9 @@ function credits(){
     // appendChild
     menuContainer.appendChild(title);
     menuContainer.appendChild(textb);
+    menuContainer.appendChild(integrantesContainer);
+    menuContainer.appendChild(fecha);
     menuContainer.appendChild(backButton);
 }
+
 
