@@ -16,6 +16,10 @@ class GameScene extends Phaser.Scene {
 
             //sonidos
             this.load.audio('musicaN1', 'sonidos/nivel1.mp3');
+            this.load.audio('jojopick', 'sonidos/jojopick.mp3');
+            this.load.audio('diopick', 'sonidos/diopick.mp3');
+            this.load.audio('jojoSpecial', 'sonidos/jojoSpecial.mp3');
+            this.load.audio('dioSpecial', 'sonidos/dioSpecial.mp3');
 
             //personajes
             if(modelo === 1){
@@ -36,6 +40,11 @@ class GameScene extends Phaser.Scene {
 
             //música nivel
             this.musicaN1 = this.sound.add('musicaN1');
+            this.jojopick = this.sound.add('jojopick');
+            this.diopick = this.sound.add('diopick');
+            this.jojoSpecial = this.sound.add('jojoSpecial');
+            this.dioSpecial = this.sound.add('dioSpecial');
+
             this.musicaN1.play();
 
             //  The platforms group contains the ground and the 2 ledges we can jump on
@@ -136,6 +145,13 @@ class GameScene extends Phaser.Scene {
                 frameRate: 10,
                 repeat: 0 // No se repite, ya que es un golpe
             }); 
+
+            this.anims.create({
+                key: 'iggy',
+                frames: this.anims.generateFrameNames('iggy', { prefix: 'iggy', end: 8, zeroPad: 4}),
+                frameRate: 8,
+                repeat: -1
+            });
             
             //  Input Events
             cursors = this.input.keyboard.createCursorKeys();
@@ -144,6 +160,12 @@ class GameScene extends Phaser.Scene {
             cherrys = this.physics.add.group({
                 key: 'cherry',
                 repeat: 14,
+                setXY: { x: 12, y: 0, stepX: 65 }
+            });
+
+            iggys = this.physics.add.group({
+                key: 'iggy',
+                repeat: 0,
                 setXY: { x: 12, y: 0, stepX: 65 }
             });
 
@@ -165,9 +187,12 @@ class GameScene extends Phaser.Scene {
             this.physics.add.collider(player, platforms);
             this.physics.add.collider(cherrys, platforms);
             this.physics.add.collider(knives, platforms);
+            this.physics.add.collider(iggys, platforms);
 
             //  Checks to see if the player overlaps with any of the cherrys, if he does call the collectCherry function
             this.physics.add.overlap(player, cherrys, collectCherry, null, this);
+
+            this.physics.add.overlap(player, iggys, collectIggy, null, this);
 
             this.physics.add.collider(player, knives, hitKnife, null, this);
             
@@ -302,6 +327,7 @@ function startPhaserGame() {
 
 var player;
 var cherrys;
+var iggys;
 var knives;
 var platforms;
 var cursors;
@@ -309,8 +335,31 @@ var score;
 var gameOver = false;
 var scoreText;
 var life;
+var plus;
 var lifeText;
 let playerName = '';
+
+function collectIggy (player, iggy) {
+    iggy.destroy(); // Elimina a Iggy cuando el jugador lo toca
+    score += 50; // Aumenta el puntaje
+
+    if (modelo === 1) {
+        player.setTint(0x659df7);
+        this.jojoSpecial.play();
+    } else {
+        player.setTint(0x5bf502);
+        this.dioSpecial.play();
+    }
+
+    plus = true;
+    
+    this.time.delayedCall(5000, () => { 
+        player.clearTint();
+        plus = false;
+    }, [], this);
+    
+    scoreText.setText('Score: ' + score);
+}
 
 
 function collectCherry (player, cherry)
@@ -318,7 +367,19 @@ function collectCherry (player, cherry)
     cherry.disableBody(true, true);
 
     //  Add and update the score
-    score += 10;
+
+    if (modelo === 1) {
+        this.jojopick.play();
+    } else {
+        this.diopick.play();
+    }
+
+    if (plus === true) {
+        score += 20;
+    } else {
+        score += 10;
+    }
+
     scoreText.setText('Score: ' + score);
 
     if (cherrys.countActive(true) === 0)
