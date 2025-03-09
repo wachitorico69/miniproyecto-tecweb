@@ -1,4 +1,5 @@
 // ******JUEGO******
+let modelo = 0; //si es 1 usa jojo, 2 dio
 class GameScene extends Phaser.Scene {
     constructor() {
         super({ key: 'GameScene' }); //no funciona sin esto
@@ -16,8 +17,12 @@ class GameScene extends Phaser.Scene {
             this.load.audio('musicaN1', 'sonidos/nivel1.mp3');
 
             //personajes
-            this.load.atlas('dude', 'assets/dio.png', 'assets/diosprites.json');   //DIO
-            //this.load.atlas('dude', 'assets/jojo.png', 'assets/jojosprites.json'); //JOTARO
+            if(modelo === 1){
+                this.load.atlas('dude', 'assets/jojo.png', 'assets/jojosprites.json');
+            }
+            else if(modelo === 2){
+                this.load.atlas('dude', 'assets/dio.png', 'assets/diosprites.json');   //DIO
+            }
             
             life = 3;
             score = 0;
@@ -395,6 +400,13 @@ function prepareGame(){
         imgElement.onload = function() {
             ctx.clearRect(0, 0, canvas.width, canvas.height); // Optional: Clear canvas before drawing new image
             ctx.drawImage(imgElement, mouseX - 50, mouseY - 50, 100, 100); // Draw image at mouse position
+            console.log('Dropped image source:', imgSrc);
+
+            if (imgSrc === 'http://localhost:880/assets/dio-panel.gif') {
+                modelo = 2;
+            } else if (imgSrc === 'http://localhost:880/assets/jojo-panel.gif') {
+                modelo = 1;
+            }
         };
     });
 
@@ -439,8 +451,8 @@ function prepareGame(){
     menuContainer.appendChild(backButton);
     document.body.appendChild(img2); //esta fuera del grid
     document.body.appendChild(img); //esta fuera del grid
- 
 }
+
 //para regresar al menu
 function exitGame() {
     if (window.game) { //evita memory leaks
