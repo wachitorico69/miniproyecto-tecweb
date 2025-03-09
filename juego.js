@@ -355,30 +355,40 @@ function startGame() {
     }
 }
 //registra nombre y personaje
-function prepareGame(){
+function prepareGame() {
     const menuContainer = document.getElementById('menuContainer');
-    menuContainer.innerHTML = ''; //vacia html
+    menuContainer.innerHTML = ''; // Vaciar el HTML
 
-    menuContainer.style.display = 'grid'; // CSS
-    menuContainer.style.gridTemplateColumns = '1fr'; 
-    menuContainer.style.gridGap = '10px';
+    menuContainer.style.display = 'grid'; // Usamos grid para un diseño organizado
+    menuContainer.style.gridTemplateColumns = '1fr'; // Una columna
+    menuContainer.style.gridGap = '20px'; // Espaciado entre elementos
 
-    const title = document.createElement('h2'); //texto: Name
+    // Título principal
+    const title = document.createElement('h2');
     title.textContent = 'Name';
+    menuContainer.appendChild(title);
 
-    const alias = document.createElement('textarea');//areatext de alias
-    alias.rows = 1; 
+    // Area de texto para el alias
+    const alias = document.createElement('textarea');
+    alias.rows = 1;
     alias.cols = 20;
-    alias.textContent = 'insert alias'
+    alias.textContent = 'insert alias';
+    menuContainer.appendChild(alias);
 
-    const title2 = document.createElement('h2'); //texto: Choose 
+    // Segundo título
+    const title2 = document.createElement('h2');
     title2.textContent = 'Choose';
+    menuContainer.appendChild(title2);
 
-    const canvas = document.createElement('canvas');//CANVA
+    // Canvas
+    const canvas = document.createElement('canvas');
     canvas.width = 400;
     canvas.height = 300;
     canvas.id = "myCanvas";
     canvas.style.backgroundColor = "lightblue";
+    menuContainer.appendChild(canvas);
+
+    // Obtener contexto para el canvas
     const ctx = canvas.getContext('2d');
     canvas.addEventListener('dragover', function (e) {
         e.preventDefault(); 
@@ -386,20 +396,20 @@ function prepareGame(){
     });
     canvas.addEventListener('drop', function (e) {
         e.preventDefault();
-        // Get the drop position
+        // Obtener la posición del mouse dentro del canvas
         const rect = canvas.getBoundingClientRect();
         const mouseX = e.clientX - rect.left;
         const mouseY = e.clientY - rect.top;
 
-        // Get the image source from the drag event data
+        // Obtener la fuente de la imagen arrastrada
         const imgSrc = e.dataTransfer.getData('image');
 
-        // Draw the image on the canvas at the drop position
+        // Dibujar la imagen en el canvas
         const imgElement = new Image();
         imgElement.src = imgSrc;
         imgElement.onload = function() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height); // Optional: Clear canvas before drawing new image
-            ctx.drawImage(imgElement, mouseX - 50, mouseY - 50, 100, 100); // Draw image at mouse position
+            ctx.clearRect(0, 0, canvas.width, canvas.height); // Limpiar el canvas antes de dibujar
+            ctx.drawImage(imgElement, mouseX - 50, mouseY - 50, 100, 100); // Dibujar imagen en la posición
             console.log('Dropped image source:', imgSrc);
 
             if (imgSrc === 'http://localhost:880/assets/dio-panel.gif') {
@@ -409,7 +419,6 @@ function prepareGame(){
             }
         };
     });
-
     const start = document.createElement('button'); //comenzar juego
     start.textContent = 'START';
     start.onclick = () => startGame();
