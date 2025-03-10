@@ -182,10 +182,10 @@ class GameScene extends Phaser.Scene {
             knives = this.physics.add.group();
 
             
-            let colorTexto = modelo === 1 ? '#9400ff' : '#fbff11'; 
+            let colorTexto = modelo === 1 ? '#58deff' : '#fbff11'; 
             // The score
-            scoreText = this.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: colorTexto });
-            lifeText = this.add.text(260, 16, 'life: 3', { fontSize: '32px', fill: colorTexto });
+            scoreText = this.add.text(16, 16, 'Score: 0', { fontFamily: '"DotGothic16", sans-serif', fontSize: '32px', fill: colorTexto });
+            lifeText = this.add.text(260, 16, 'Lives: 3', { fontFamily: '"DotGothic16", sans-serif', fontSize: '32px', fill: colorTexto });
             //  Collide the player and the cherrys with the platforms
             this.physics.add.collider(player, platforms);
             this.physics.add.collider(cherrys, platforms);
@@ -264,18 +264,39 @@ class PauseScene extends Phaser.Scene {
     }
 
     create() {
-        this.add.text(300, 250, 'Game Paused', { fontSize: '32px', fill: '#fff' });
-
+        this.add.text(300, 100, 'GAME PAUSED', { fontFamily: '"DotGothic16", sans-serif', fontStyle: 'bold', fontSize: '36px', fill: '#fff' });
+        
         // Opción para reanudar
-        this.add.text(300, 290, 'Resume', { fontSize: '28px', fill: '#fff' })
+        this.add.text(300, 150, 'Resume', { fontFamily: '"DotGothic16", sans-serif', fontSize: '28px', fill: '#fff' })
             .setInteractive()
             .on('pointerdown', () => {
                 this.scene.resume('GameScene'); // Reanudar el juego
                 this.scene.stop(); // Detener la escena de pausa
             });
 
+        // Opción para activar o desactivar música
+        this.musicaN1 = this.scene.get('GameScene').musicaN1;
+        let musicButtonText = this.musicaN1.isPlaying ? 'ON' : 'OFF';
+
+        this.add.text(300, 190, 'Music: ', { fontFamily: '"DotGothic16", sans-serif', fontSize: '28px', fill: '#fff'});
+        let musicButton = this.add.text(400, 190, musicButtonText, { 
+            fontFamily: '"DotGothic16", sans-serif', 
+            fontSize: '28px', 
+            fill: '#fff' 
+        })
+        .setInteractive()
+        .on('pointerdown', () => {
+            if (this.musicaN1.isPlaying) {
+                this.musicaN1.pause();
+                musicButton.setText('OFF');
+            } else {
+                this.musicaN1.resume();
+                musicButton.setText('ON');
+            }
+        });
+
         // Opción para volver al menú principal
-        this.add.text(300, 330, 'Back to Menu', { fontSize: '28px', fill: '#ff0' })
+        this.add.text(300, 230, 'Back to Menu', { fontFamily: '"DotGothic16", sans-serif', fontSize: '28px', fill: '#ff0' })
             .setInteractive()
             .on('pointerdown', () => {
                 exitGame();
