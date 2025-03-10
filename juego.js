@@ -186,6 +186,7 @@ class GameScene extends Phaser.Scene {
             // The score
             scoreText = this.add.text(16, 16, 'Score: 0', { fontFamily: '"DotGothic16", sans-serif', fontSize: '32px', fill: colorTexto });
             lifeText = this.add.text(260, 16, 'Lives: 3', { fontFamily: '"DotGothic16", sans-serif', fontSize: '32px', fill: colorTexto });
+            itemTime = this.add.text(850, 16, '', { fontFamily: '"DotGothic16", sans-serif', fontSize: '50px', fontStyle: 'bold', fill: '#FF0000' });
             //  Collide the player and the cherrys with the platforms
             this.physics.add.collider(player, platforms);
             this.physics.add.collider(cherrys, platforms);
@@ -365,12 +366,15 @@ var scoreText;
 var life;
 var plus;
 var lifeText;
+var itemTime;
 let playerName = '';
 var player_is_dead = false;
 var iggyAp = false;
+var countdown;
 
 function collectIggy (player, iggy) {
     iggy.destroy(); // Elimina a Iggy cuando el jugador lo toca
+    clearInterval(countdown);
     score += 50; // Aumenta el puntaje
 
     if (modelo === 1) {
@@ -389,6 +393,8 @@ function collectIggy (player, iggy) {
     }, [], this);
     
     scoreText.setText('Score: ' + score);
+
+    itemTime.setText('');
 }
 
 
@@ -421,9 +427,20 @@ function collectCherry (player, cherry)
         var iggy = iggys.create(pos[random][0], pos[random][1],'iggy');
         iggy.anims.play('iggy');
         this.bark.play();
-        setTimeout(() => {
-            iggy.destroy(); // iggy desaparece
-        }, 5000);
+
+        let count = 5;  
+        itemTime.setText(count.toString()); // Mostrar el primer valor inmediatamente
+        
+        countdown = setInterval(() => {
+            count--; // Reducir antes de actualizar el texto
+            itemTime.setText(count.toString()); 
+        
+            if (count === 0) { 
+                clearInterval(countdown); 
+                iggy.destroy();
+                itemTime.setText('');
+            }
+        }, 1000);        
     }
 
     if (cherrys.countActive(true) === 0)
