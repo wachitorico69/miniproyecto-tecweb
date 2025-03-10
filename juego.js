@@ -186,7 +186,6 @@ class GameScene extends Phaser.Scene {
             // The score
             scoreText = this.add.text(16, 16, 'Score: 0', { fontFamily: '"DotGothic16", sans-serif', fontSize: '32px', fill: colorTexto });
             lifeText = this.add.text(260, 16, 'Lives: 3', { fontFamily: '"DotGothic16", sans-serif', fontSize: '32px', fill: colorTexto });
-            itemTime = this.add.text(900, 16, '', { fontFamily: '"DotGothic16", sans-serif', fontSize: '50px', fontStyle: 'bold', fill: '#FF0000' });
             //  Collide the player and the cherrys with the platforms
             this.physics.add.collider(player, platforms);
             this.physics.add.collider(cherrys, platforms);
@@ -363,7 +362,6 @@ var cursors;
 var score;
 var gameOver = false;
 var scoreText;
-var itemTime;
 var life;
 var plus;
 var lifeText;
@@ -423,21 +421,9 @@ function collectCherry (player, cherry)
         var iggy = iggys.create(pos[random][0], pos[random][1],'iggy');
         iggy.anims.play('iggy');
         this.bark.play();
-        
-        let count = 5;  
-        itemTime.setText(count.toString()); // Mostrar el primer valor inmediatamente
-        
-        const countdown = setInterval(() => {
-            count--; // Reducir antes de actualizar el texto
-            itemTime.setText(count.toString()); 
-        
-            if (count === 0) { 
-                clearInterval(countdown); 
-                iggy.destroy();
-                itemTime.setText('');
-            }
-        }, 1000);
-        
+        setTimeout(() => {
+            iggy.destroy(); // iggy desaparece
+        }, 5000);
     }
 
     if (cherrys.countActive(true) === 0)
@@ -501,9 +487,10 @@ function hitKnife (player, knife)
 
 function saveRecord(name, score) {
     let records = JSON.parse(localStorage.getItem("gameRecords")) || [];
+    const date = new Date().toISOString().split('T')[0];  //fecha
 
     // Guardar solo si el puntaje es mayor al mínimo registrado o si hay menos de 5 récords
-    records.push({ name, score });
+    records.push({ name, score, date });
     records.sort((a, b) => b.score - a.score); // Ordenar de mayor a menor
     records = records.slice(0, 10); // Mantener solo los 5 mejores
 
@@ -675,7 +662,7 @@ function records() {
     // Crear encabezados
     const thead = document.createElement('thead');
     const headerRow = document.createElement('tr');
-    ['#', 'Name', 'Score'].forEach(text => {
+    ['#', 'Name', 'Score', 'date'].forEach(text => {
         const th = document.createElement('th');
         th.textContent = text;
         headerRow.appendChild(th);
@@ -698,11 +685,14 @@ function records() {
         const scoreCell = document.createElement('td');
         scoreCell.textContent = record.score;
 
+        const dateCell = document.createElement('td');
+        dateCell.textContent = record.date;
+
         // Agregar celdas a la fila
         row.appendChild(numberCell);
         row.appendChild(nameCell);
         row.appendChild(scoreCell);
-
+        row.appendChild(dateCell);
         tbody.appendChild(row);
     });
 
