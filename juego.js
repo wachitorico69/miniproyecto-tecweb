@@ -487,9 +487,10 @@ function hitKnife (player, knife)
 
 function saveRecord(name, score) {
     let records = JSON.parse(localStorage.getItem("gameRecords")) || [];
+    const date = new Date().toISOString().split('T')[0];  //fecha
 
     // Guardar solo si el puntaje es mayor al mínimo registrado o si hay menos de 5 récords
-    records.push({ name, score });
+    records.push({ name, score, date });
     records.sort((a, b) => b.score - a.score); // Ordenar de mayor a menor
     records = records.slice(0, 10); // Mantener solo los 5 mejores
 
@@ -661,7 +662,7 @@ function records() {
     // Crear encabezados
     const thead = document.createElement('thead');
     const headerRow = document.createElement('tr');
-    ['#', 'Name', 'Score'].forEach(text => {
+    ['#', 'Name', 'Score', 'date'].forEach(text => {
         const th = document.createElement('th');
         th.textContent = text;
         headerRow.appendChild(th);
@@ -684,11 +685,14 @@ function records() {
         const scoreCell = document.createElement('td');
         scoreCell.textContent = record.score;
 
+        const dateCell = document.createElement('td');
+        dateCell.textContent = record.date;
+
         // Agregar celdas a la fila
         row.appendChild(numberCell);
         row.appendChild(nameCell);
         row.appendChild(scoreCell);
-
+        row.appendChild(dateCell);
         tbody.appendChild(row);
     });
 
