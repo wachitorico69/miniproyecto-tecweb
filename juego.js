@@ -581,11 +581,19 @@ function prepareGame() {
         };
     });
     const start = document.createElement('button'); //comenzar juego
+    const onlyLetters = /^[A-Za-z]+$/; // Regex for only letters
     start.textContent = 'START';
     start.onclick = () => {
         if (modelo === 0) {
             alert('Please select a character before starting the game!');
-        } else {
+        }else 
+        if (alias.value.length > 8 || alias.value.length < 4){
+            alert('4 <= Alias => 8');
+        }else
+        if(!onlyLetters.test(alias.value)){
+            alert('Not valid! Only letters are allowed.');
+        }
+        else {
             startGame()
         }
     };
