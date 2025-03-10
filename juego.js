@@ -167,7 +167,16 @@ class GameScene extends Phaser.Scene {
                 key: 'iggy',
                 repeat: 0,
                 setXY: { x: 12, y: 0, stepX: 65 }
+                
             });
+
+            iggys.children.iterate(function (iggy) {
+                iggy.play('iggy'); // animación
+                setTimeout(() => {
+                    iggy.destroy(); // iggy desaparece
+                }, 3000);
+            });
+            
 
             cherrys.children.iterate(function (child) {
 
@@ -694,7 +703,7 @@ function credits(){
 
     // Fecha
     const fecha = document.createElement('p');
-    fecha.textContent = 'Fecha: 13/03/2025';
+    fecha.textContent = 'Fecha: 14/03/2025';
 
     const backButton = document.createElement('button');
     backButton.textContent = 'Back to Menu';
