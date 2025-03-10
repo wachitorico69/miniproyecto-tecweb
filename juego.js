@@ -22,6 +22,8 @@ class GameScene extends Phaser.Scene {
             this.load.audio('dioSpecial', 'sonidos/dioSpecial.mp3');
             this.load.audio('jojodmg', 'sonidos/jojodmg.mp3');
             this.load.audio('diodmg', 'sonidos/diodmg.mp3');
+            this.load.audio('bark', 'sonidos/bark.mp3');
+            this.load.audio('knife', 'sonidos/knife.mp3');
 
             //personajes
             if(modelo === 1){
@@ -48,6 +50,8 @@ class GameScene extends Phaser.Scene {
             this.dioSpecial = this.sound.add('dioSpecial');
             this.jojodmg = this.sound.add('jojodmg');
             this.diodmg = this.sound.add('diodmg');
+            this.bark = this.sound.add('bark');
+            this.knife = this.sound.add('knife');
 
             this.musicaN1.play();
 
@@ -200,6 +204,10 @@ class GameScene extends Phaser.Scene {
         }
     update ()
         {
+        if(player_is_dead){
+            return;
+        }
+            
         if (cursors.left.isDown)
             {
                 player.setVelocityX(-160);
@@ -337,6 +345,8 @@ var life;
 var plus;
 var lifeText;
 let playerName = '';
+var player_is_dead = false;
+var iggyAp = false;
 
 function collectIggy (player, iggy) {
     iggy.destroy(); // Elimina a Iggy cuando el jugador lo toca
@@ -381,12 +391,15 @@ function collectCherry (player, cherry)
 
     scoreText.setText('Score: ' + score);
 
-    if (cherrys.countActive(true) === 14) {
-        let pos = [[650, 320], [200, 220], [775, 190], [800, 525], [200, 480], [500, 480], [800, 480]]; 
-        let random = Math.floor(Math.random() * 7); 
+    let rand = Math.floor(Math.random() * 15);
+    if (cherrys.countActive(true) === rand && iggyAp === false) {
+        iggyAp = true;
+        let pos = [[650, 320], [200, 220], [775, 190], [200, 480], [500, 480], [800, 480]]; 
+        let random = Math.floor(Math.random() * 6); 
 
         var iggy = iggys.create(pos[random][0], pos[random][1],'iggy');
         iggy.anims.play('iggy');
+        this.bark.play();
         setTimeout(() => {
             iggy.destroy(); // iggy desaparece
         }, 5000);
@@ -394,6 +407,7 @@ function collectCherry (player, cherry)
 
     if (cherrys.countActive(true) === 0)
     {
+        iggyAp = false;
         //  A new batch of cherrys to collect
         cherrys.children.iterate(function (child) {
 
@@ -423,19 +437,24 @@ function hitKnife (player, knife)
     player.setTint(0xff0000);
     life--;
     lifeText.setText('Life: ' + life);
-    player.anims.play('daño', true);
     if (life === 0) {
+        player_is_dead = true;
         this.musicaN1.stop();
+    
         if (modelo === 1) {
             this.jojodmg.play();
         } else {
             this.diodmg.play();
         }
+
+        this.physics.pause();
+        player.anims.play('daño');
         saveRecord(playerName, score);
         this.time.delayedCall(1000, () => {
             this.scene.start('GameOverS');
         });
     } else {
+        this.knife.play();
         player.setAlpha(0.5);
         this.time.delayedCall(1000, () => { 
             player.clearTint();
@@ -444,6 +463,7 @@ function hitKnife (player, knife)
         }, [], this);
     }
 }
+
 function saveRecord(name, score) {
     let records = JSON.parse(localStorage.getItem("gameRecords")) || [];
 
