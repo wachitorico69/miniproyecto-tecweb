@@ -373,7 +373,6 @@ var iggyAp = false;
 
 function collectIggy (player, iggy) {
     iggy.destroy(); // Elimina a Iggy cuando el jugador lo toca
-    clearInterval(countdown);
     score += 50; // Aumenta el puntaje
 
     if (modelo === 1) {
