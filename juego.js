@@ -20,6 +20,8 @@ class GameScene extends Phaser.Scene {
             this.load.audio('diopick', 'sonidos/diopick.mp3');
             this.load.audio('jojoSpecial', 'sonidos/jojoSpecial.mp3');
             this.load.audio('dioSpecial', 'sonidos/dioSpecial.mp3');
+            this.load.audio('jojodmg', 'sonidos/jojodmg.mp3');
+            this.load.audio('diodmg', 'sonidos/diodmg.mp3');
 
             //personajes
             if(modelo === 1){
@@ -44,6 +46,8 @@ class GameScene extends Phaser.Scene {
             this.diopick = this.sound.add('diopick');
             this.jojoSpecial = this.sound.add('jojoSpecial');
             this.dioSpecial = this.sound.add('dioSpecial');
+            this.jojodmg = this.sound.add('jojodmg');
+            this.diodmg = this.sound.add('diodmg');
 
             this.musicaN1.play();
 
@@ -51,7 +55,6 @@ class GameScene extends Phaser.Scene {
             platforms = this.physics.add.staticGroup();
 
             //  Here we create the ground.
-            //  Scale it to fit the width of the game (the original sprite is 400x32 in size)
             platforms.create(0, 525, 'ground'); platforms.create(400, 525, 'ground'); platforms.create(800, 525, 'ground');
 
             //  Now let's create some ledges
@@ -163,20 +166,7 @@ class GameScene extends Phaser.Scene {
                 setXY: { x: 12, y: 0, stepX: 65 }
             });
 
-            iggys = this.physics.add.group({
-                key: 'iggy',
-                repeat: 0,
-                setXY: { x: 12, y: 0, stepX: 65 }
-                
-            });
-
-            iggys.children.iterate(function (iggy) {
-                iggy.play('iggy'); // animación
-                setTimeout(() => {
-                    iggy.destroy(); // iggy desaparece
-                }, 3000);
-            });
-            
+            iggys = this.physics.add.group();
 
             cherrys.children.iterate(function (child) {
 
@@ -391,6 +381,17 @@ function collectCherry (player, cherry)
 
     scoreText.setText('Score: ' + score);
 
+    if (cherrys.countActive(true) === 14) {
+        let pos = [[650, 320], [200, 220], [775, 190], [800, 525], [200, 480], [500, 480], [800, 480]]; 
+        let random = Math.floor(Math.random() * 7); 
+
+        var iggy = iggys.create(pos[random][0], pos[random][1],'iggy');
+        iggy.anims.play('iggy');
+        setTimeout(() => {
+            iggy.destroy(); // iggy desaparece
+        }, 5000);
+    }
+
     if (cherrys.countActive(true) === 0)
     {
         //  A new batch of cherrys to collect
@@ -424,6 +425,12 @@ function hitKnife (player, knife)
     lifeText.setText('Life: ' + life);
     player.anims.play('daño', true);
     if (life === 0) {
+        this.musicaN1.stop();
+        if (modelo === 1) {
+            this.jojodmg.play();
+        } else {
+            this.diodmg.play();
+        }
         saveRecord(playerName, score);
         this.time.delayedCall(1000, () => {
             this.scene.start('GameOverS');
@@ -716,5 +723,3 @@ function credits(){
     menuContainer.appendChild(fecha);
     menuContainer.appendChild(backButton);
 }
-
-
