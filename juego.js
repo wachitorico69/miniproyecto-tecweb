@@ -186,6 +186,7 @@ class GameScene extends Phaser.Scene {
             // The score
             scoreText = this.add.text(16, 16, 'Score: 0', { fontFamily: '"DotGothic16", sans-serif', fontSize: '32px', fill: colorTexto });
             lifeText = this.add.text(260, 16, 'Lives: 3', { fontFamily: '"DotGothic16", sans-serif', fontSize: '32px', fill: colorTexto });
+            itemTime = this.add.text(900, 16, '', { fontFamily: '"DotGothic16", sans-serif', fontSize: '50px', fontStyle: 'bold', fill: '#FF0000' });
             //  Collide the player and the cherrys with the platforms
             this.physics.add.collider(player, platforms);
             this.physics.add.collider(cherrys, platforms);
@@ -362,6 +363,7 @@ var cursors;
 var score;
 var gameOver = false;
 var scoreText;
+var itemTime;
 var life;
 var plus;
 var lifeText;
@@ -421,9 +423,21 @@ function collectCherry (player, cherry)
         var iggy = iggys.create(pos[random][0], pos[random][1],'iggy');
         iggy.anims.play('iggy');
         this.bark.play();
-        setTimeout(() => {
-            iggy.destroy(); // iggy desaparece
-        }, 5000);
+        
+        let count = 5;  
+        itemTime.setText(count.toString()); // Mostrar el primer valor inmediatamente
+        
+        const countdown = setInterval(() => {
+            count--; // Reducir antes de actualizar el texto
+            itemTime.setText(count.toString()); 
+        
+            if (count === 0) { 
+                clearInterval(countdown); 
+                iggy.destroy();
+                itemTime.setText('');
+            }
+        }, 1000);
+        
     }
 
     if (cherrys.countActive(true) === 0)
