@@ -12,6 +12,9 @@ class GameScene extends Phaser.Scene {
             this.load.image('ground', 'assets/platform.png');
             this.load.image('cherry', 'assets/cherry.png');
             this.load.image('knife', 'assets/knife.png');
+            this.load.image('heart1', 'assets/heart.gif');
+            this.load.image('heart2', 'assets/heart.gif');
+            this.load.image('heart3', 'assets/heart.gif');
             this.load.atlas('iggy', 'assets/iggy.png', 'assets/iggysprites.json');
 
             //sonidos
@@ -41,6 +44,9 @@ class GameScene extends Phaser.Scene {
         {
             //  A simple background for our game
             this.add.image(480, 269, 'nivel1');
+            this.heart1 = this.add.image(30, 30, 'heart1');
+            this.heart2 = this.add.image(80, 30, 'heart2');
+            this.heart3 = this.add.image(130, 30, 'heart3');
 
             //música nivel
             this.musicaN1 = this.sound.add('musicaN1');
@@ -181,12 +187,27 @@ class GameScene extends Phaser.Scene {
 
             knives = this.physics.add.group();
 
-            
+            const date = new Date().toISOString().split('T')[0];
             let colorTexto = modelo === 1 ? '#58deff' : '#fbff11'; 
-            // The score
-            scoreText = this.add.text(16, 16, 'Score: 0', { fontFamily: '"DotGothic16", sans-serif', fontSize: '32px', fill: colorTexto });
-            lifeText = this.add.text(260, 16, 'Lives: 3', { fontFamily: '"DotGothic16", sans-serif', fontSize: '32px', fill: colorTexto });
-            itemTime = this.add.text(850, 16, '', { fontFamily: '"DotGothic16", sans-serif', fontSize: '50px', fontStyle: 'bold', fill: '#FF0000' });
+
+            //score
+            if (playerName.length === 8) {
+                scoreText = this.add.text(370, 16, 'score: 0', { fontFamily: '"DotGothic16", sans-serif', fontSize: '32px', fill: colorTexto });
+            } else if (playerName.length === 7) {
+                scoreText = this.add.text(360, 16, 'score: 0', { fontFamily: '"DotGothic16", sans-serif', fontSize: '32px', fill: colorTexto });
+            } else if (playerName.length === 6) {
+                scoreText = this.add.text(350, 16, 'score: 0', { fontFamily: '"DotGothic16", sans-serif', fontSize: '32px', fill: colorTexto });
+            } else if (playerName.length === 5) {
+                scoreText = this.add.text(330, 16, 'score: 0', { fontFamily: '"DotGothic16", sans-serif', fontSize: '32px', fill: colorTexto });
+            } else if (playerName.length === 4) {
+                scoreText = this.add.text(310, 16, 'score: 0', { fontFamily: '"DotGothic16", sans-serif', fontSize: '32px', fill: colorTexto });
+            }
+            
+            //tablero
+            this.add.text(780, 16, date, { fontFamily: '"DotGothic16", sans-serif', fontSize: '32px', fill: colorTexto }); //fecha
+            this.add.text(200, 16, playerName + "'s", { fontFamily: '"DotGothic16", sans-serif', fontSize: '32px', fill: colorTexto }); //user
+            itemTime = this.add.text(850, 50, '', { fontFamily: '"DotGothic16", sans-serif', fontSize: '50px', fontStyle: 'bold', fill: '#ff2b2b' }); //tiempo iggy
+
             //  Collide the player and the cherrys with the platforms
             this.physics.add.collider(player, platforms);
             this.physics.add.collider(cherrys, platforms);
@@ -321,10 +342,10 @@ class GameOverS extends Phaser.Scene {
     }
 
     create() {
-        this.add.text(300, 250, 'Game Over', { fontSize: '32px', fill: '#fff' });
+        this.add.text(300, 250, 'Game Over', { fontFamily: '"DotGothic16", sans-serif', fontSize: '32px', fill: '#fff' });
 
         // Opción para reanudar
-        this.add.text(300, 290, 'Back to Menu', { fontSize: '28px', fill: '#fff' })
+        this.add.text(300, 290, 'Back to Menu', { fontFamily: '"DotGothic16", sans-serif', fontSize: '28px', fill: '#fff' })
             .setInteractive()
             .on('pointerdown', () => {
                 exitGame();
@@ -365,15 +386,20 @@ var gameOver = false;
 var scoreText;
 var life;
 var plus;
-var lifeText;
 var itemTime;
 let playerName = '';
 var player_is_dead = false;
 var iggyAp = false;
+var iggyTimer = null;
 
 function collectIggy (player, iggy) {
     iggy.destroy(); // Elimina a Iggy cuando el jugador lo toca
     score += 50; // Aumenta el puntaje
+
+    if (this.iggyTimer) {
+        this.iggyTimer.remove(); // eliminar temp
+        this.iggyTimer = null;
+    }
 
     if (modelo === 1) {
         player.setTint(0x659df7);
@@ -390,7 +416,7 @@ function collectIggy (player, iggy) {
         plus = false;
     }, [], this);
     
-    scoreText.setText('Score: ' + score);
+    scoreText.setText('score: ' + score);
 
     itemTime.setText('');
 }
@@ -414,7 +440,7 @@ function collectCherry (player, cherry)
         score += 10;
     }
 
-    scoreText.setText('Score: ' + score);
+    scoreText.setText('score: ' + score);
 
     let rand = Math.floor(Math.random() * 15);
     if (cherrys.countActive(true) === rand && iggyAp === false) {
@@ -427,18 +453,24 @@ function collectCherry (player, cherry)
         this.bark.play();
 
         let count = 5;
-        itemTime.setText(count.toString()); // Mostrar el primer valor inmediatamente
+        itemTime.setText(count.toString()); 
         
-        this.time.addEvent({
+        // eliminar temp antes de crear uno nuevo
+        if (this.iggyTimer) {
+            this.iggyTimer.remove();
+        }
+
+        this.iggyTimer = this.time.addEvent({
             delay: 1000, // 1 segundo
-            repeat: count - 1, // Se repite 4 veces más después de la primera ejecución
+            repeat: count - 1, // 5 veces
             callback: () => {
                 count--;
                 itemTime.setText(count.toString());
-        
+
                 if (count === 0) {
                     iggy.destroy();
                     itemTime.setText('');
+                    this.iggyTimer = null; // referencia temp
                 }
             }
         });
@@ -473,11 +505,17 @@ function hitKnife (player, knife)
         return; // Si el jugador es invulnerable, no hacer nada
     }
 
+    let scene = game.scene.keys['GameScene'];
     player.invulnerable = true; // Activar invulnerabilidad temporal
     player.setTint(0xff0000);
     life--;
-    lifeText.setText('Life: ' + life);
+    if (life === 2) {
+        scene.heart3.setVisible(false);
+    } else if (life === 1) {
+        scene.heart2.setVisible(false);
+    }
     if (life === 0) {
+        scene.heart1.setVisible(false);
         player_is_dead = true;
         this.musicaN1.stop();
     
