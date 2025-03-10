@@ -501,17 +501,25 @@ function hitKnife (player, knife)
         }, [], this);
     }
 }
-
+//Guardar records
 function saveRecord(name, score) {
     let records = JSON.parse(localStorage.getItem("gameRecords")) || [];
-    const date = new Date().toISOString().split('T')[0];  //fecha
+    const date = new Date().toISOString().split('T')[0]; // Fecha actual en formato YYYY-MM-DD
 
-    // Guardar solo si el puntaje es mayor al mínimo registrado o si hay menos de 5 récords
-    records.push({ name, score, date });
-    records.sort((a, b) => b.score - a.score); // Ordenar de mayor a menor
-    records = records.slice(0, 10); // Mantener solo los 5 mejores
+    // Convertir el nombre a minúsculas para evitar duplicados con diferente capitalización
+    const normalizedName = name.toLowerCase();
 
-    localStorage.setItem("gameRecords", JSON.stringify(records));
+    // Buscar si el nombre ya existe en los registros 
+    let existingRecord = records.find(record => record.name.toLowerCase() === normalizedName);
+
+    if (!existingRecord || score > existingRecord.score) {
+        records = records.filter(record => record.name.toLowerCase() !== normalizedName); 
+        records.push({ name, score, date });
+        records.sort((a, b) => b.score - a.score); // Ordenar de mayor a menor
+        records = records.slice(0, 10); // Mantener solo los 10 mejores
+
+        localStorage.setItem("gameRecords", JSON.stringify(records));
+    }
 }
 
 //     ********* HTML - MENU *********
@@ -602,13 +610,28 @@ function prepareGame() {
     start.textContent = 'START';
     start.onclick = () => {
         if (modelo === 0) {
-            alert('Please select a character before starting the game!');
+            Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: "Please select a character before starting the game!",
+                background: '#58deff',
+            });
         }else 
         if (alias.value.length > 8 || alias.value.length < 4){
-            alert('4 <= Alias => 8');
+            Swal.fire({
+                icon: "error",
+                title: "Invalid Alias",
+                text: "The alias must be between 4 and 8 characters!",
+                background: '#58deff',
+            });
         }else
         if(!onlyLetters.test(alias.value)){
-            alert('Not valid! Only letters are allowed.');
+            Swal.fire({
+                icon: "error",
+                title: "Invalid Alias",
+                text: "Only letters are allowed in the alias!",
+                background: '#58deff',
+            });
         }
         else {
             startGame()
