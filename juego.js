@@ -560,7 +560,13 @@ function prepareGame() {
     });
     const start = document.createElement('button'); //comenzar juego
     start.textContent = 'START';
-    start.onclick = () => startGame();
+    start.onclick = () => {
+        if (modelo === 0) {
+            alert('Please select a character before starting the game!');
+        } else {
+            startGame()
+        }
+    };
 
     const backButton = document.createElement('button'); //regresar menu
     backButton.textContent = 'Back to Menu';
@@ -706,7 +712,7 @@ function credits(){
 
     // Lista de integrantes con imágenes
     const integrantes = [
-        { nombre: "Richard Allen Campos Acero", img: "assets/chris.jpg" },
+        { nombre: "Richard Allen Campos Acero", img: "assets/richard.jpg" },
         { nombre: "Christopher Martínez González", img: "assets/chris.jpg" },
         { nombre: "Dario Miguel Moreno González", img: "assets/Dario.jpg" }
     ];
