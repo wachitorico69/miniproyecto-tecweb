@@ -765,12 +765,35 @@ function help(){
     const title = document.createElement('h2');
     title.textContent = 'Help Page';
 
+    const subTitle = document.createElement('h3');
+    subTitle.textContent = 'Objetive';
+
+    const description = document.createElement('p');
+    description.innerHTML = 'Dodge your nemesis\'s relentless attacks with skill and precision,<br> allowing you to survive long enough to find an opportunity to strike back.<br> Only by outmaneuvering and outlasting your foe will you be <br> able to defeat him and ultimately accomplish your objectives.';    const helpContainer = document.createElement('div');
+    helpContainer.style.display = 'flex';
+    helpContainer.style.alignItems = 'center'; 
+
+    const movementImg = document.createElement('img');
+    movementImg.src = 'assets/movement-help.png';
+    movementImg.alt = 'movement-help';
+    movementImg.style.width = '300px'; 
+
+    const pauseImg = document.createElement('img');
+    pauseImg.src = 'assets/pause-help.png';
+    pauseImg.alt = 'pause-help';
+    pauseImg.style.width = '100px'; 
+
     const backButton = document.createElement('button');
     backButton.textContent = 'Back to Menu';
     backButton.onclick = () => location.reload();
 
     //appendChild
     menuContainer.appendChild(title);
+    menuContainer.appendChild(subTitle);
+    menuContainer.appendChild(description);
+    helpContainer.appendChild(pauseImg);
+    helpContainer.appendChild(movementImg);
+    document.getElementById('menuContainer').appendChild(helpContainer);
     menuContainer.appendChild(backButton);
 }
 //creditos
