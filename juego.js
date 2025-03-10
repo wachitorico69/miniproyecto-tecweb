@@ -370,7 +370,6 @@ var itemTime;
 let playerName = '';
 var player_is_dead = false;
 var iggyAp = false;
-var countdown;
 
 function collectIggy (player, iggy) {
     iggy.destroy(); // Elimina a Iggy cuando el jugador lo toca
@@ -428,19 +427,23 @@ function collectCherry (player, cherry)
         iggy.anims.play('iggy');
         this.bark.play();
 
-        let count = 5;  
+        let count = 5;
         itemTime.setText(count.toString()); // Mostrar el primer valor inmediatamente
         
-        countdown = setInterval(() => {
-            count--; // Reducir antes de actualizar el texto
-            itemTime.setText(count.toString()); 
+        this.time.addEvent({
+            delay: 1000, // 1 segundo
+            repeat: count - 1, // Se repite 4 veces más después de la primera ejecución
+            callback: () => {
+                count--;
+                itemTime.setText(count.toString());
         
-            if (count === 0) { 
-                clearInterval(countdown); 
-                iggy.destroy();
-                itemTime.setText('');
+                if (count === 0) {
+                    iggy.destroy();
+                    itemTime.setText('');
+                }
             }
-        }, 1000);        
+        });
+               
     }
 
     if (cherrys.countActive(true) === 0)
