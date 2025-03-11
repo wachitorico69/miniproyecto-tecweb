@@ -187,7 +187,7 @@ class GameScene extends Phaser.Scene {
 
             knives = this.physics.add.group();
 
-            const date = new Date().toISOString().split('T')[0];
+            const date = new Date().toLocaleDateString('es-MX');
             let colorTexto = modelo === 1 ? '#58deff' : '#fbff11'; 
 
             //score
@@ -515,6 +515,7 @@ function hitKnife (player, knife)
         scene.heart2.setVisible(false);
     }
     if (life === 0) {
+        player.setTint(0xff0000);
         scene.heart1.setVisible(false);
         player_is_dead = true;
         this.musicaN1.stop();
@@ -544,7 +545,7 @@ function hitKnife (player, knife)
 //Guardar records
 function saveRecord(name, score) {
     let records = JSON.parse(localStorage.getItem("gameRecords")) || [];
-    const date = new Date().toISOString().split('T')[0]; // Fecha actual en formato YYYY-MM-DD
+    const date = new Date().toLocaleDateString('es-MX'); // Fecha actual en formato YYYY-MM-DD
 
     // Convertir el nombre a minúsculas para evitar duplicados con diferente capitalización
     const normalizedName = name.toLowerCase();
