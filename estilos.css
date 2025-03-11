@@ -96,7 +96,8 @@ textarea {
 canvas {
     margin-top: 20px;
     border: 2px solid #ddd;
-    border-radius: 8px;
+    border-color: #d400ff; 
+    box-shadow: 0px 0px 20px #d400ff; 
 }
 
 #team {
