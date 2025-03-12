@@ -94,6 +94,7 @@ textarea {
 
 /* Estilo para el canvas */
 canvas {
+    font-family: 'SF Fedora', sans-serif;
     margin-top: 20px;
     border: 2px solid #ddd;
     border-color: #d400ff; 
