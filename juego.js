@@ -192,21 +192,21 @@ class GameScene extends Phaser.Scene {
 
             //score
             if (playerName.length === 8) {
-                scoreText = this.add.text(370, 16, 'score: 0', { fontFamily: '"DotGothic16", sans-serif', fontSize: '32px', fill: colorTexto });
+                scoreText = this.add.text(400, 12, '0 ', { fontFamily: 'SF Fedora, sans-serif', fontSize: '25px', fill: colorTexto });
             } else if (playerName.length === 7) {
-                scoreText = this.add.text(360, 16, 'score: 0', { fontFamily: '"DotGothic16", sans-serif', fontSize: '32px', fill: colorTexto });
+                scoreText = this.add.text(385, 12, '0 ', { fontFamily: 'SF Fedora, sans-serif', fontSize: '25px', fill: colorTexto });
             } else if (playerName.length === 6) {
-                scoreText = this.add.text(350, 16, 'score: 0', { fontFamily: '"DotGothic16", sans-serif', fontSize: '32px', fill: colorTexto });
+                scoreText = this.add.text(370, 12, '0 ', { fontFamily: 'SF Fedora, sans-serif', fontSize: '25px', fill: colorTexto });
             } else if (playerName.length === 5) {
-                scoreText = this.add.text(330, 16, 'score: 0', { fontFamily: '"DotGothic16", sans-serif', fontSize: '32px', fill: colorTexto });
+                scoreText = this.add.text(360, 12, '0 ', { fontFamily: 'SF Fedora, sans-serif', fontSize: '25px', fill: colorTexto });
             } else if (playerName.length === 4) {
-                scoreText = this.add.text(310, 16, 'score: 0', { fontFamily: '"DotGothic16", sans-serif', fontSize: '32px', fill: colorTexto });
+                scoreText = this.add.text(340, 12, '0 ', { fontFamily: 'SF Fedora, sans-serif', fontSize: '25px', fill: colorTexto });
             }
             
             //tablero
-            this.add.text(780, 16, date, { fontFamily: '"DotGothic16", sans-serif', fontSize: '32px', fill: colorTexto }); //fecha
-            this.add.text(200, 16, playerName + "'s", { fontFamily: '"DotGothic16", sans-serif', fontSize: '32px', fill: colorTexto }); //user
-            itemTime = this.add.text(850, 50, '', { fontFamily: '"DotGothic16", sans-serif', fontSize: '50px', fontStyle: 'bold', fill: '#ff2b2b' }); //tiempo iggy
+            this.add.text(170, 15, playerName + "'s score: ", { fontFamily: 'SF Fedora, sans-serif', fontSize: '26px', fill: colorTexto }); //user
+            this.add.text(810, 5, date + ' ', { fontFamily: 'SF Fedora, sans-serif', fontSize: '24px', fill: colorTexto }); //fecha
+            itemTime = this.add.text(850, 30, ' ' + ' ', { fontFamily: 'SF Fedora, sans-serif', fontSize: '46px', fontStyle: 'bold', fill: '#ff2b2b' }); //tiempo iggy
 
             //  Collide the player and the cherrys with the platforms
             this.physics.add.collider(player, platforms);
@@ -285,11 +285,20 @@ class PauseScene extends Phaser.Scene {
         super({ key: 'PauseScene' });
     }
 
+    preload() {
+        this.load.image('jojopausa', 'assets/jojopausa.gif');
+        this.load.image('diopausa', 'assets/diopausa.png');
+    }
+
     create() {
-        this.add.text(300, 100, 'GAME PAUSED', { fontFamily: '"DotGothic16", sans-serif', fontStyle: 'bold', fontSize: '36px', fill: '#fff' });
+        const graphics = this.add.graphics();
+        graphics.fillStyle(0xd400ff, 1);
+        graphics.fillRect(230, 94, 500, 350);
+        
+        this.add.text(420, 100, 'GAME PAUSED ', { fontFamily: 'SF Fedora, sans-serif', fontStyle: 'bold', fontSize: '36px', fill: '#fff' });
         
         // Opción para reanudar
-        this.add.text(300, 150, 'Resume', { fontFamily: '"DotGothic16", sans-serif', fontSize: '28px', fill: '#fff' })
+        this.add.text(500, 190, 'Resume ', { fontFamily: 'SF Fedora, sans-serif', fontSize: '28px', fill: '#fff' })
             .setInteractive()
             .on('pointerdown', () => {
                 this.scene.resume('GameScene'); // Reanudar el juego
@@ -298,31 +307,37 @@ class PauseScene extends Phaser.Scene {
 
         // Opción para activar o desactivar música
         this.musicaN1 = this.scene.get('GameScene').musicaN1;
-        let musicButtonText = this.musicaN1.isPlaying ? 'ON' : 'OFF';
+        let musicButtonText = this.musicaN1.isPlaying ? 'ON ' : 'OFF ';
 
-        this.add.text(300, 190, 'Music: ', { fontFamily: '"DotGothic16", sans-serif', fontSize: '28px', fill: '#fff'});
-        let musicButton = this.add.text(400, 190, musicButtonText, { 
-            fontFamily: '"DotGothic16", sans-serif', 
+        this.add.text(480, 230, 'Music: ', { fontFamily: 'SF Fedora, sans-serif', fontSize: '28px', fill: '#fff'});
+        let musicButton = this.add.text(580, 230, musicButtonText, { 
+            fontFamily: 'SF Fedora, sans-serif', 
             fontSize: '28px', 
-            fill: '#fff' 
+            fill: '#ff0'
         })
         .setInteractive()
         .on('pointerdown', () => {
             if (this.musicaN1.isPlaying) {
                 this.musicaN1.pause();
-                musicButton.setText('OFF');
+                musicButton.setText('OFF ');
             } else {
                 this.musicaN1.resume();
-                musicButton.setText('ON');
+                musicButton.setText('ON ');
             }
         });
 
         // Opción para volver al menú principal
-        this.add.text(300, 230, 'Back to Menu', { fontFamily: '"DotGothic16", sans-serif', fontSize: '28px', fill: '#ff0' })
+        this.add.text(450, 340, 'Back to Menu ', { fontFamily: 'SF Fedora, sans-serif', fontSize: '28px', fill: '#ff0' })
             .setInteractive()
             .on('pointerdown', () => {
                 exitGame();
             });
+
+        if (modelo === 1) {
+            this.add.image(345, 294, 'jojopausa');
+        } else {
+            this.add.image(345, 295, 'diopausa');
+        }
 
         this.escKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC); // Tecla ESC para pausar el juego
     }
@@ -342,10 +357,10 @@ class GameOverS extends Phaser.Scene {
     }
 
     create() {
-        this.add.text(300, 250, 'Game Over', { fontFamily: '"DotGothic16", sans-serif', fontSize: '32px', fill: '#fff' });
+        this.add.text(300, 250, 'Game Over ', { fontFamily: 'SF Fedora, sans-serif', fontSize: '32px', fill: '#fff' });
 
         // Opción para reanudar
-        this.add.text(300, 290, 'Back to Menu', { fontFamily: '"DotGothic16", sans-serif', fontSize: '28px', fill: '#fff' })
+        this.add.text(300, 290, 'Back to Menu ', { fontFamily: 'SF Fedora, sans-serif', fontSize: '28px', fill: '#fff' })
             .setInteractive()
             .on('pointerdown', () => {
                 exitGame();
@@ -389,7 +404,6 @@ var plus;
 var itemTime;
 let playerName = '';
 var player_is_dead = false;
-var iggyAp = false;
 var iggyTimer = null;
 
 function collectIggy (player, iggy) {
@@ -416,9 +430,9 @@ function collectIggy (player, iggy) {
         plus = false;
     }, [], this);
     
-    scoreText.setText('score: ' + score);
+    scoreText.setText(score + ' ');
 
-    itemTime.setText('');
+    itemTime.setText(' ');
 }
 
 
@@ -440,11 +454,10 @@ function collectCherry (player, cherry)
         score += 10;
     }
 
-    scoreText.setText('score: ' + score);
+    scoreText.setText(score + ' ');
 
-    let rand = Math.floor(Math.random() * 15);
-    if (cherrys.countActive(true) === rand && iggyAp === false) {
-        iggyAp = true;
+    //let rand = Math.floor(Math.random() * 15);
+    if (cherrys.countActive(true) === 10) {
         let pos = [[650, 320], [200, 220], [775, 190], [200, 480], [500, 480], [800, 480]]; 
         let random = Math.floor(Math.random() * 6); 
 
@@ -453,7 +466,7 @@ function collectCherry (player, cherry)
         this.bark.play();
 
         let count = 5;
-        itemTime.setText(count.toString()); 
+        itemTime.setText(count.toString() + ' '); 
         
         // eliminar temp antes de crear uno nuevo
         if (this.iggyTimer) {
@@ -465,11 +478,11 @@ function collectCherry (player, cherry)
             repeat: count - 1, // 5 veces
             callback: () => {
                 count--;
-                itemTime.setText(count.toString());
+                itemTime.setText(count.toString() + ' ');
 
                 if (count === 0) {
                     iggy.destroy();
-                    itemTime.setText('');
+                    itemTime.setText(' ');
                     this.iggyTimer = null; // referencia temp
                 }
             }
@@ -479,7 +492,6 @@ function collectCherry (player, cherry)
 
     if (cherrys.countActive(true) === 0)
     {
-        iggyAp = false;
         //  A new batch of cherrys to collect
         cherrys.children.iterate(function (child) {
 
