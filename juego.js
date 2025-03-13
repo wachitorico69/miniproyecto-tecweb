@@ -356,7 +356,20 @@ class GameOverS extends Phaser.Scene {
         super({ key: 'GameOverS' });
     }
 
+    preload() {
+        this.load.atlas('dioL', 'assets/dioL.png', 'assets/dioLsprites.json');
+    }
+
     create() {
+        this.anims.create({
+            key: 'dioL',
+            frames: this.anims.generateFrameNames('dioL', { prefix: 'dioL', end: 13, zeroPad: 4}),  //DIO
+            frameRate: 10,
+            repeat: -1
+        });
+
+        const dioSprite = this.add.sprite(400, 200, 'dioL').play('dioL').setScale(1.5);
+        
         this.add.text(300, 250, 'Game Over ', { fontFamily: 'SF Fedora, sans-serif', fontSize: '32px', fill: '#fff' });
 
         // Opción para reanudar
