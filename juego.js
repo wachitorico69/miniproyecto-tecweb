@@ -12,9 +12,9 @@ class GameScene extends Phaser.Scene {
             this.load.image('ground', 'assets/platform.png');
             this.load.image('cherry', 'assets/cherry.png');
             this.load.image('knife', 'assets/knife.png');
-            this.load.image('heart1', 'assets/heart.gif');
-            this.load.image('heart2', 'assets/heart.gif');
-            this.load.image('heart3', 'assets/heart.gif');
+            this.load.image('heart1', 'assets/heart.png');
+            this.load.image('heart2', 'assets/heart.png');
+            this.load.image('heart3', 'assets/heart.png');
             this.load.atlas('iggy', 'assets/iggy.png', 'assets/iggysprites.json');
 
             //sonidos
@@ -36,7 +36,7 @@ class GameScene extends Phaser.Scene {
                 this.load.atlas('dude', 'assets/dio.png', 'assets/diosprites.json');   //DIO
             }
             
-            life = 1;
+            life = 3;
             score = 0;
 
         }
