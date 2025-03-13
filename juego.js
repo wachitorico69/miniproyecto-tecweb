@@ -36,7 +36,7 @@ class GameScene extends Phaser.Scene {
                 this.load.atlas('dude', 'assets/dio.png', 'assets/diosprites.json');   //DIO
             }
             
-            life = 3;
+            life = 1;
             score = 0;
 
         }
@@ -358,9 +358,14 @@ class GameOverS extends Phaser.Scene {
 
     preload() {
         this.load.atlas('dioL', 'assets/dioL.png', 'assets/dioLsprites.json');
+        this.load.atlas('jojoL', 'assets/jojoL.png', 'assets/jojoLsprites.json');
+        this.load.audio('muerte', 'sonidos/gameover.mp3');
     }
 
     create() {
+        this.muerte = this.sound.add('muerte');
+        this.muerte.play();
+
         this.anims.create({
             key: 'dioL',
             frames: this.anims.generateFrameNames('dioL', { prefix: 'dioL', end: 13, zeroPad: 4}),  //DIO
@@ -368,14 +373,27 @@ class GameOverS extends Phaser.Scene {
             repeat: -1
         });
 
-        const dioSprite = this.add.sprite(400, 200, 'dioL').play('dioL').setScale(1.5);
+        this.anims.create({
+            key: 'jojoL',
+            frames: this.anims.generateFrameNames('jojoL', { prefix: 'jojoL', end: 8, zeroPad: 4}),  //DIO
+            frameRate: 10,
+            repeat: -1
+        });
+
+        if (modelo === 1) {
+            const jojoSprite = this.add.sprite(460, 240, 'jojoL').play('jojoL').setScale(1.5);
+        } else {
+            const dioSprite = this.add.sprite(475, 240, 'dioL').play('dioL').setScale(1.5);
+        }
         
-        this.add.text(300, 250, 'Game Over ', { fontFamily: 'SF Fedora, sans-serif', fontSize: '32px', fill: '#fff' });
+        this.add.text(280, 40, 'Game Over ', { fontFamily: 'SF Fedora, sans-serif', fontSize: '70px', fill: '#ff23da' });
+        this.add.text(340, 360, 'Total score: ' + score + ' ', { fontFamily: 'SF Fedora, sans-serif', fontSize: '30px', fill: '#ff23da' });
 
         // Opción para reanudar
-        this.add.text(300, 290, 'Back to Menu ', { fontFamily: 'SF Fedora, sans-serif', fontSize: '28px', fill: '#fff' })
+        this.add.text(365, 420, 'Back to Menu ', { fontFamily: 'SF Fedora, sans-serif', fontSize: '28px', fill: '#fff' })
             .setInteractive()
             .on('pointerdown', () => {
+                this.muerte.stop();
                 exitGame();
             });
     }
@@ -869,13 +887,13 @@ function credits(){
     title.textContent = 'Credits';
 
     const textb = document.createElement('h3');
-    textb.textContent = 'Tecnologías Web\nIntegrantes:';
+    textb.textContent = 'Tecnologías Web\n\nIntegrantes:';
     textb.style.whiteSpace = 'pre-line';
 
     // Lista de integrantes con imágenes
     const integrantes = [
         { nombre: "Richard Allen Campos Acero", img: "assets/richard.jpg" },
-        { nombre: "Christopher Martínez González", img: "assets/chris.jpg" },
+        { nombre: "Christopher Martínez González", img: "assets/Chris.jpg" },
         { nombre: "Dario Miguel Moreno González", img: "assets/Dario.jpg" }
     ];
 
