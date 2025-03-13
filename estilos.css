@@ -1,3 +1,8 @@
+/*Variables*/
+:root{
+    --primary-color: #d400ff;
+    --secondary-color: #ff23da;
+}
 /* Estilo global */
 body {
     font-family: 'SF Fedora', sans-serif;
@@ -45,8 +50,8 @@ body {
 }
 /* Efecto de brillo en el borde */
 #menuContainer:hover {
-    border-color: #d400ff; 
-    box-shadow: 0px 0px 20px #d400ff; 
+    border-color: var(--primary-color); 
+    box-shadow: 0px 0px 20px var(--primary-color); 
 }
 /* Títulos principales */
 #menuContainer h1, #menuContainer h2 {
@@ -59,7 +64,7 @@ body {
 #menuContainer h1 {
     font-size: 4em; 
     margin-bottom: 30px;
-    color: #ff23da;
+    color: var(--secondary-color);
 }
 
 /* Estilo para los botones */
@@ -78,7 +83,7 @@ body {
 
 /* Efecto hover en los botones */
 #menuContainer button:hover {
-    background-color: #ff23da;
+    background-color: var(--secondary-color);
     transform: scale(1.1);
 }
 
@@ -97,8 +102,8 @@ canvas {
     font-family: 'SF Fedora', sans-serif;
     margin-top: 20px;
     border: 2px solid #ddd;
-    border-color: #d400ff; 
-    box-shadow: 0px 0px 20px #d400ff; 
+    border-color: var(--primary-color); 
+    box-shadow: 0px 0px 20px var(--primary-color); 
 }
 
 #team {
@@ -127,7 +132,7 @@ canvas {
 
 #recordsTable th {
     background-color: #9400ff;
-    color: #ff23da;
+    color: var(--secondary-color);
 }
 
 #recordsTable tr:hover {
