@@ -327,12 +327,12 @@ class GameScene extends Phaser.Scene {
             platforms.create(400, 525, 'ground');
             platforms.create(800, 525, 'ground');
 
-            platforms.create(470, 400, 'ground');
+            platforms.create(470, 380, 'ground');
 
             platforms.create(-10, 300, 'ground');
             platforms.create(1000, 300, 'ground');
 
-            platforms.create(470, 200, 'ground');
+            platforms.create(470, 180, 'ground');
 
             player.setPosition(100, 450);
             //TEXTO
