@@ -2,7 +2,6 @@
 let modelo = 0; //si es 1 usa jojo, 2 dio
 let knifeCounter = 0;
 let Level2 = false; 
-let knifeTimer = null;
 class GameScene extends Phaser.Scene {
     constructor() {
         super({ key: 'GameScene' }); //no funciona sin esto
@@ -292,37 +291,63 @@ class GameScene extends Phaser.Scene {
         if (knifeCounter === 1 && !Level2){
             this.levelUp();
         }
-        if (knifeCounter === 2 && Level2 === true){
+        if (knifeCounter === 1 && Level2 === true){
             this.gameEnded();
         }
     }
     levelUp() {
         knifeCounter = 0;
-        // Cambia música
+        //Cambia Musica
         this.musicaN1.pause();
-        this.musicaN1 = this.sound.add('musicaN2');  
+        this.musicaN1 = this.sound.add('musicaN2');  // Change the source of musicaN1 to musicaN2's source
         this.musicaN1.play();
+        //KNIFES
         knives.clear(true, true);
-    
-        // Configura las plataformas y el fondo
-        this.background.setTexture('nivel2');
-        platforms.children.iterate(function (platform) {
-            platform.disableBody(true, true);
-        });
-        platforms.create(0, 525, 'ground');
-        platforms.create(400, 525, 'ground');
-        platforms.create(800, 525, 'ground');
-        platforms.create(470, 380, 'ground');
-        platforms.create(-10, 300, 'ground');
-        platforms.create(1000, 300, 'ground');
-        platforms.create(470, 180, 'ground');
-    
+        
+        this.playerInputEnabled = false;
         player.setPosition(100, 450);
-    
-        // Actualiza el texto del nivel
-        this.levelText.setText("Level: 2 "); 
-        Level2 = true;
-    }    
+
+        this.tweens.add({
+            targets: this.blackOverlay,
+            alpha: 1,  // Fade to a fully visible black screen
+            duration: 100,  // Duration of the fade in
+            ease: 'Power2'
+        });
+        this.levelCompletedText.setVisible(true);
+
+        setTimeout(() => {
+            this.levelCompletedText.setVisible(false);
+            //FONDO
+            this.background.setTexture('nivel2');
+            //PLATFORM
+            platforms.children.iterate(function (platform) {
+                platform.disableBody(true, true);
+            });
+            platforms.create(0, 525, 'ground');
+            platforms.create(400, 525, 'ground');
+            platforms.create(800, 525, 'ground');
+
+            platforms.create(470, 380, 'ground');
+
+            platforms.create(-10, 300, 'ground');
+            platforms.create(1000, 300, 'ground');
+
+            platforms.create(470, 180, 'ground');
+
+            player.setPosition(100, 450);
+            //TEXTO
+            this.levelText.setText("Level: 2 "); 
+            this.playerInputEnabled = true;
+            this.tweens.add({
+                targets: this.blackOverlay,
+                alpha: 0,  // Fade back to invisible
+                duration: 1800,  // Duration of the fade out
+                ease: 'Power2'
+            });
+            this.playerInputEnabled = true; 
+            Level2 = true;
+        }, 2000);
+    }
     gameEnded() {
         // Pause the game world
         this.physics.world.isPaused = true;
@@ -619,10 +644,13 @@ function collectIggy (player, iggy) {
     itemTime.setText(' ');
 }
 
-function collectCherry (player, cherry) {
+
+function collectCherry (player, cherry)
+{
     cherry.disableBody(true, true);
 
     //  Add and update the score
+
     if (modelo === 1) {
         this.jojopick.play();
     } else {
@@ -637,11 +665,47 @@ function collectCherry (player, cherry) {
 
     scoreText.setText(score + ' ');
 
-    // Crear un cuchillo extra si el jugador recoge todas las cherrys
-    if (cherrys.countActive(true) === 0) {
-        // A new batch of cherrys to collect
+    //let rand = Math.floor(Math.random() * 15);
+    if (cherrys.countActive(true) === 10) {
+        let pos = [[650, 320], [200, 220], [775, 190], [200, 480], [500, 480], [800, 480]]; 
+        let random = Math.floor(Math.random() * 6); 
+
+        var iggy = iggys.create(pos[random][0], pos[random][1],'iggy');
+        iggy.anims.play('iggy');
+        this.bark.play();
+
+        let count = 5;
+        itemTime.setText(count.toString() + ' '); 
+        
+        // eliminar temp antes de crear uno nuevo
+        if (this.iggyTimer) {
+            this.iggyTimer.remove();
+        }
+
+        this.iggyTimer = this.time.addEvent({
+            delay: 1000, // 1 segundo
+            repeat: count - 1, // 5 veces
+            callback: () => {
+                count--;
+                itemTime.setText(count.toString() + ' ');
+
+                if (count === 0) {
+                    iggy.destroy();
+                    itemTime.setText(' ');
+                    this.iggyTimer = null; // referencia temp
+                }
+            }
+        });
+               
+    }
+
+    if (cherrys.countActive(true) === 0)
+    {
+        //  A new batch of cherrys to collect
         cherrys.children.iterate(function (child) {
+
             child.enableBody(true, child.x, 0, true, true);
+
         });
 
         var x = (player.x < 400) ? Phaser.Math.Between(400, 800) : Phaser.Math.Between(0, 400);
@@ -653,23 +717,9 @@ function collectCherry (player, cherry) {
         knife.setVelocity(Phaser.Math.Between(-200, 200), 20);
         knife.allowGravity = false;
 
-        knife.setAngularVelocity(Phaser.Math.Between(-200, 200)); // Hace que el cuchillo rote
-        // Se crea un cuchillo que va de lado a lado
-        if (Level2) {
-            // Cuchillo veloz
-            let x = Phaser.Math.Between(50, 750);
-            let knife = knives.create(x, 16, 'knife');
-            knife.setBounce(1);
-            knife.setCollideWorldBounds(true);
-            knife.setVelocity(Phaser.Math.Between(400, 500), 0); 
-            knife.allowGravity = false;
-
-            knife.setAngularVelocity(Phaser.Math.Between(-200, 200)); 
-            knife.setDepth(1); 
-        }
+        knife.setAngularVelocity(Phaser.Math.Between(-200, 200)); //hace que el cuchillo rote
     }
 }
-
 
 function hitKnife (player, knife)
 {
