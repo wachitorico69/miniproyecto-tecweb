@@ -19,6 +19,7 @@ class GameScene extends Phaser.Scene {
             this.load.image('heart2', 'assets/heart.png');
             this.load.image('heart3', 'assets/heart.png');
             this.load.atlas('iggy', 'assets/iggy.png', 'assets/iggysprites.json');
+            this.load.atlas('StoneMask', 'assets/StoneMask.png', 'assets/StoneMasksprites.json');
 
             //sonidos
             this.load.audio('musicaN1', 'sonidos/nivel1.mp3');
@@ -170,6 +171,13 @@ class GameScene extends Phaser.Scene {
                 frameRate: 8,
                 repeat: -1
             });
+
+            this.anims.create({
+                key: 'StoneMaskAnimation',
+                frames: this.anims.generateFrameNames('StoneMask', { prefix: 'StoneMask', end: 8, zeroPad: 4 }),
+                frameRate: 8,
+                repeat: -1
+            });
             
             //  Input Events
             cursors = this.input.keyboard.createCursorKeys();
@@ -288,7 +296,7 @@ class GameScene extends Phaser.Scene {
                 this.scene.pause(); // Pause game
             }
 
-        if (knifeCounter === 1 && !Level2){
+        if (knifeCounter === 4 && !Level2){
             this.levelUp();
         }
         if (knifeCounter === 1 && Level2 === true){
@@ -303,7 +311,10 @@ class GameScene extends Phaser.Scene {
         this.musicaN1.play();
         //KNIFES
         knives.clear(true, true);
+<<<<<<< Updated upstream
         
+=======
+>>>>>>> Stashed changes
         this.playerInputEnabled = false;
         player.setPosition(100, 450);
 
@@ -347,7 +358,11 @@ class GameScene extends Phaser.Scene {
             this.playerInputEnabled = true; 
             Level2 = true;
         }, 2000);
+<<<<<<< Updated upstream
     }
+=======
+    }  
+>>>>>>> Stashed changes
     gameEnded() {
         // Pause the game world
         this.physics.world.isPaused = true;
@@ -664,6 +679,39 @@ function collectCherry (player, cherry)
     }
 
     scoreText.setText(score + ' ');
+    //let rand = Math.floor(Math.random() * 15);
+    if (cherrys.countActive(true) === 10) {
+        let pos = [[650, 320], [200, 220], [775, 190], [200, 480], [500, 480], [800, 480]]; 
+        let random = Math.floor(Math.random() * 6); 
+
+        var iggy = iggys.create(pos[random][0], pos[random][1],'iggy');
+        iggy.anims.play('iggy');
+        this.bark.play();
+
+        let count = 5;
+        itemTime.setText(count.toString() + ' '); 
+        
+        // eliminar temp antes de crear uno nuevo
+        if (this.iggyTimer) {
+            this.iggyTimer.remove();
+        }
+
+        this.iggyTimer = this.time.addEvent({
+            delay: 1000, // 1 segundo
+            repeat: count - 1, // 5 veces
+            callback: () => {
+                count--;
+                itemTime.setText(count.toString() + ' ');
+
+                if (count === 0) {
+                    iggy.destroy();
+                    itemTime.setText(' ');
+                    this.iggyTimer = null; // referencia temp
+                }
+            }
+        });
+               
+    }
 
     //let rand = Math.floor(Math.random() * 15);
     if (cherrys.countActive(true) === 10) {
