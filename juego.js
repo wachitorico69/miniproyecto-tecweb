@@ -177,7 +177,7 @@ class GameScene extends Phaser.Scene {
             //  Some cherrys to collect, 12 in total, evenly spaced 70 pixels apart along the x axis
             cherrys = this.physics.add.group({
                 key: 'cherry',
-                repeat: 2,
+                repeat: 14,
                 setXY: { x: 12, y: 0, stepX: 65 }
             });
 
@@ -217,7 +217,7 @@ class GameScene extends Phaser.Scene {
             this.blackOverlay = this.add.graphics({ fillStyle: { color: 0x000000 } });
             this.blackOverlay.fillRect(0, 0, this.cameras.main.width, this.cameras.main.height); // Fill the screen with black
             this.blackOverlay.setAlpha(0);
-            this.levelCompletedText = this.add.text(480, 200, "LEVEL 1 COMPLETED", { fontFamily: 'SF Fedora, sans-serif', fontSize: '32px', fill: '#ff0000' }).setOrigin(0.5);
+            this.levelCompletedText = this.add.text(480, 200, "LEVEL 1 COMPLETED ", { fontFamily: 'SF Fedora, sans-serif', fontSize: '32px', fill: '#ff0000' }).setOrigin(0.5);
             this.levelCompletedText.setVisible(false);
             //  Collide the player and the cherrys with the platforms
             this.physics.add.collider(player, platforms);
@@ -336,7 +336,7 @@ class GameScene extends Phaser.Scene {
 
             player.setPosition(100, 450);
             //TEXTO
-            this.levelText.setText("Level: 2"); 
+            this.levelText.setText("Level: 2 "); 
             this.playerInputEnabled = true;
             this.tweens.add({
                 targets: this.blackOverlay,
@@ -588,7 +588,7 @@ function startPhaserGame() {
                 debug: false
             }
         },
-        scene: [GameScene, PauseScene, GameOverS] //escenas en el juego (menu,juego)
+        scene: [GameScene, PauseScene, VictoryS, GameOverS] //escenas en el juego (menu,juego)
     });
 };
 
