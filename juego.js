@@ -311,10 +311,7 @@ class GameScene extends Phaser.Scene {
         this.musicaN1.play();
         //KNIFES
         knives.clear(true, true);
-<<<<<<< Updated upstream
         
-=======
->>>>>>> Stashed changes
         this.playerInputEnabled = false;
         player.setPosition(100, 450);
 
@@ -358,11 +355,7 @@ class GameScene extends Phaser.Scene {
             this.playerInputEnabled = true; 
             Level2 = true;
         }, 2000);
-<<<<<<< Updated upstream
     }
-=======
-    }  
->>>>>>> Stashed changes
     gameEnded() {
         // Pause the game world
         this.physics.world.isPaused = true;
