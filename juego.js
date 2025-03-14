@@ -293,6 +293,7 @@ class GameScene extends Phaser.Scene {
         }
     }
     levelUp() {
+        knifeCounter = 0;
         //Cambia Musica
         this.musicaN1.pause();
         this.musicaN1 = this.sound.add('musicaN2');  // Change the source of musicaN1 to musicaN2's source
