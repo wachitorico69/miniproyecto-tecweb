@@ -177,7 +177,7 @@ class GameScene extends Phaser.Scene {
             //  Some cherrys to collect, 12 in total, evenly spaced 70 pixels apart along the x axis
             cherrys = this.physics.add.group({
                 key: 'cherry',
-                repeat: 1,
+                repeat: 14,
                 setXY: { x: 12, y: 0, stepX: 65 }
             });
 
@@ -467,15 +467,28 @@ class VictoryS extends Phaser.Scene {
             const graphics = this.add.graphics();
             graphics.fillStyle(0x5343e7, 1);
             graphics.fillRect(660, 0, 300, 538);
+
+            if (playerName.length === 4) {
+                this.add.text(765, 115, '¡' + playerName + '! ', { fontFamily: 'SF Fedora, sans-serif', fontSize: '30px', fill: '#ff23da' });
+            } else if (playerName.length === 5) {
+                this.add.text(755, 115, '¡' + playerName + '! ', { fontFamily: 'SF Fedora, sans-serif', fontSize: '30px', fill: '#ff23da' });
+            } else if (playerName.length === 6) {
+                this.add.text(745, 115, '¡' + playerName + '! ', { fontFamily: 'SF Fedora, sans-serif', fontSize: '30px', fill: '#ff23da' });
+            } else if (playerName.length === 7) {
+                this.add.text(735, 115, '¡' + playerName + '! ', { fontFamily: 'SF Fedora, sans-serif', fontSize: '30px', fill: '#ff23da' });
+            } else if (playerName.length === 8) {
+                this.add.text(730, 115, '¡' + playerName + '! ', { fontFamily: 'SF Fedora, sans-serif', fontSize: '30px', fill: '#ff23da' });
+            }
+
             this.add.text(710, 20, '¡VICTORY! ', { fontFamily: 'SF Fedora, sans-serif', fontSize: '40px', fill: '#ff23da' });
             this.add.text(680, 75, 'Congratulations ', { fontFamily: 'SF Fedora, sans-serif', fontSize: '30px', fill: '#ff23da' });
-            this.add.text(755, 115, '¡' + playerName + '! ', { fontFamily: 'SF Fedora, sans-serif', fontSize: '30px', fill: '#ff23da' });
             this.add.text(710, 350, 'Total score: \n' + score + ' ', { fontFamily: 'SF Fedora, sans-serif', fontSize: '30px', fill: '#ff23da' });
             this.add.image(810, 250, 'jojopose').setScale(0.75);
 
             this.add.text(700, 450, 'Back to Menu ', { fontFamily: 'SF Fedora, sans-serif', fontSize: '28px', fill: '#fff' })
             .setInteractive()
             .on('pointerdown', () => {
+                saveRecord(playerName, score);
                 this.jojoMusicW.stop();
                 exitGame();
             });
@@ -486,15 +499,28 @@ class VictoryS extends Phaser.Scene {
             const graphics = this.add.graphics();
             graphics.fillStyle(0xfffe00, 1);
             graphics.fillRect(660, 0, 300, 538);
-            this.add.text(710, 20, '¡VICTORY! ', { fontFamily: 'SF Fedora, sans-serif', fontSize: '40px', fill: '#ff23da' });
-            this.add.text(680, 75, 'Congratulations ', { fontFamily: 'SF Fedora, sans-serif', fontSize: '30px', fill: '#ff23da' });
-            this.add.text(755, 115, '¡' + playerName + '! ', { fontFamily: 'SF Fedora, sans-serif', fontSize: '30px', fill: '#ff23da' });
-            this.add.text(700, 350, 'Total score: \n' + score + ' ', { fontFamily: 'SF Fedora, sans-serif', fontSize: '30px', fill: '#ff23da' });
+
+            if (playerName.length === 4) {
+                this.add.text(765, 115, '¡' + playerName + '! ', { fontFamily: 'SF Fedora, sans-serif', fontSize: '30px', fill: '#53ab52' });
+            } else if (playerName.length === 5) {
+                this.add.text(755, 115, '¡' + playerName + '! ', { fontFamily: 'SF Fedora, sans-serif', fontSize: '30px', fill: '#53ab52' });
+            } else if (playerName.length === 6) {
+                this.add.text(745, 115, '¡' + playerName + '! ', { fontFamily: 'SF Fedora, sans-serif', fontSize: '30px', fill: '#53ab52' });
+            } else if (playerName.length === 7) {
+                this.add.text(735, 115, '¡' + playerName + '! ', { fontFamily: 'SF Fedora, sans-serif', fontSize: '30px', fill: '#53ab52' });
+            } else if (playerName.length === 8) {
+                this.add.text(730, 115, '¡' + playerName + '! ', { fontFamily: 'SF Fedora, sans-serif', fontSize: '30px', fill: '#53ab52' });
+            }
+
+            this.add.text(710, 20, '¡VICTORY! ', { fontFamily: 'SF Fedora, sans-serif', fontSize: '40px', fill: '#53ab52' });
+            this.add.text(680, 75, 'Congratulations ', { fontFamily: 'SF Fedora, sans-serif', fontSize: '30px', fill: '#53ab52' });
+            this.add.text(710, 350, 'Total score: \n' + score + ' ', { fontFamily: 'SF Fedora, sans-serif', fontSize: '30px', fill: '#53ab52' });
             this.add.image(807, 250, 'diopose').setScale(0.75);
 
-            this.add.text(700, 450, 'Back to Menu ', { fontFamily: 'SF Fedora, sans-serif', fontSize: '28px', fill: '#89e989' })
+            this.add.text(700, 450, 'Back to Menu ', { fontFamily: 'SF Fedora, sans-serif', fontSize: '28px', fill: '#000' })
             .setInteractive()
             .on('pointerdown', () => {
+                saveRecord(playerName, score);
                 this.dioMusicW.stop();
                 exitGame();
             });
