@@ -291,6 +291,9 @@ class GameScene extends Phaser.Scene {
         if (knifeCounter === 1 && !Level2){
             this.levelUp();
         }
+        if (knifeCounter === 1 && Level2 === true){
+            this.gameEnded();
+        }
     }
     levelUp() {
         knifeCounter = 0;
@@ -344,6 +347,33 @@ class GameScene extends Phaser.Scene {
             this.playerInputEnabled = true; 
             Level2 = true;
         }, 2000);
+    }
+    gameEnded() {
+        // Pause the game world
+        this.physics.world.isPaused = true;
+        
+        // Display "Game Over" 
+        this.add.text(300, 200, "LEVEL 2 COMPLETED", {
+            fontFamily: 'SF Fedora, sans-serif',
+            fontSize: '40px',
+            fill: '#FFFFFF'
+        }).setOrigin(0.5);
+         //Botton Regresar
+        const backToMenuText = this.add.text(300, 300, "Back to Menu", {
+            fontFamily: 'SF Fedora, sans-serif',
+            fontSize: '32px',
+            fill: '#FFFFFF'
+        }).setOrigin(0.5);
+        this.add.text(340, 360, 'Total score: ' + score + ' ', { fontFamily: 'SF Fedora, sans-serif', fontSize: '30px', fill: '#ff23da' });
+
+        // Add an interactive event to the "Back to Menu" text
+        backToMenuText.setInteractive();
+        //Guarda y sale
+        backToMenuText.on('pointerdown', () => {
+            saveRecord(playerName, score);
+            exitGame();
+        });
+    
     }
 }
 
