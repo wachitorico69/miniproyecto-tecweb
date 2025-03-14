@@ -1,5 +1,7 @@
 // ******JUEGO******
 let modelo = 0; //si es 1 usa jojo, 2 dio
+let knifeCounter = 0;
+let Level2 = false; 
 class GameScene extends Phaser.Scene {
     constructor() {
         super({ key: 'GameScene' }); //no funciona sin esto
@@ -9,6 +11,7 @@ class GameScene extends Phaser.Scene {
         {
             //imagenes
             this.load.image('nivel1', 'assets/nivel1.png');
+            this.load.image('nivel2', 'assets/nivel2.png');
             this.load.image('ground', 'assets/platform.png');
             this.load.image('cherry', 'assets/cherry.png');
             this.load.image('knife', 'assets/knife.png');
@@ -19,6 +22,7 @@ class GameScene extends Phaser.Scene {
 
             //sonidos
             this.load.audio('musicaN1', 'sonidos/nivel1.mp3');
+            this.load.audio('musicaN2', 'sonidos/nivel2.mp3');
             this.load.audio('jojopick', 'sonidos/jojopick.mp3');
             this.load.audio('diopick', 'sonidos/diopick.mp3');
             this.load.audio('jojoSpecial', 'sonidos/jojoSpecial.mp3');
@@ -43,13 +47,14 @@ class GameScene extends Phaser.Scene {
     create ()
         {
             //  A simple background for our game
-            this.add.image(480, 269, 'nivel1');
+            this.background = this.add.image(480, 269, 'nivel1');
             this.heart1 = this.add.image(30, 30, 'heart1');
             this.heart2 = this.add.image(80, 30, 'heart2');
             this.heart3 = this.add.image(130, 30, 'heart3');
 
             //música nivel
             this.musicaN1 = this.sound.add('musicaN1');
+            this.musicaN2 = this.sound.add('musicaN2');
             this.jojopick = this.sound.add('jojopick');
             this.diopick = this.sound.add('diopick');
             this.jojoSpecial = this.sound.add('jojoSpecial');
@@ -205,9 +210,15 @@ class GameScene extends Phaser.Scene {
             
             //tablero
             this.add.text(170, 15, playerName + "'s score: ", { fontFamily: 'SF Fedora, sans-serif', fontSize: '26px', fill: colorTexto }); //user
+            this.levelText = this.add.text(700, 5, "Level: 1 ", { fontFamily: 'SF Fedora, sans-serif', fontSize: '26px', fill: colorTexto }); //Level
             this.add.text(810, 5, date + ' ', { fontFamily: 'SF Fedora, sans-serif', fontSize: '24px', fill: colorTexto }); //fecha
             itemTime = this.add.text(850, 30, ' ' + ' ', { fontFamily: 'SF Fedora, sans-serif', fontSize: '46px', fontStyle: 'bold', fill: '#ff2b2b' }); //tiempo iggy
-
+            //FIN NIVEL 1
+            this.blackOverlay = this.add.graphics({ fillStyle: { color: 0x000000 } });
+            this.blackOverlay.fillRect(0, 0, this.cameras.main.width, this.cameras.main.height); // Fill the screen with black
+            this.blackOverlay.setAlpha(0);
+            this.levelCompletedText = this.add.text(480, 200, "LEVEL 1 COMPLETED", { fontFamily: 'SF Fedora, sans-serif', fontSize: '32px', fill: '#ff0000' }).setOrigin(0.5);
+            this.levelCompletedText.setVisible(false);
             //  Collide the player and the cherrys with the platforms
             this.physics.add.collider(player, platforms);
             this.physics.add.collider(cherrys, platforms);
@@ -276,7 +287,63 @@ class GameScene extends Phaser.Scene {
                 this.scene.launch('PauseScene'); // Open pause menu
                 this.scene.pause(); // Pause game
             }
+
+        if (knifeCounter === 1 && !Level2){
+            this.levelUp();
         }
+    }
+    levelUp() {
+        //Cambia Musica
+        this.musicaN1.pause();
+        this.musicaN1 = this.sound.add('musicaN2');  // Change the source of musicaN1 to musicaN2's source
+        this.musicaN1.play();
+        //KNIFES
+        knives.clear(true, true);
+        
+        this.playerInputEnabled = false;
+        player.setPosition(100, 450);
+
+        this.tweens.add({
+            targets: this.blackOverlay,
+            alpha: 1,  // Fade to a fully visible black screen
+            duration: 100,  // Duration of the fade in
+            ease: 'Power2'
+        });
+        this.levelCompletedText.setVisible(true);
+
+        setTimeout(() => {
+            this.levelCompletedText.setVisible(false);
+            //FONDO
+            this.background.setTexture('nivel2');
+            //PLATFORM
+            platforms.children.iterate(function (platform) {
+                platform.disableBody(true, true);
+            });
+            platforms.create(0, 525, 'ground');
+            platforms.create(400, 525, 'ground');
+            platforms.create(800, 525, 'ground');
+
+            platforms.create(470, 400, 'ground');
+
+            platforms.create(-10, 300, 'ground');
+            platforms.create(1000, 300, 'ground');
+
+            platforms.create(470, 200, 'ground');
+
+            player.setPosition(100, 450);
+            //TEXTO
+            this.levelText.setText("Level: 2"); 
+            this.playerInputEnabled = true;
+            this.tweens.add({
+                targets: this.blackOverlay,
+                alpha: 0,  // Fade back to invisible
+                duration: 1800,  // Duration of the fade out
+                ease: 'Power2'
+            });
+            this.playerInputEnabled = true; 
+            Level2 = true;
+        }, 2000);
+    }
 }
 
 // PAUSA
@@ -532,6 +599,7 @@ function collectCherry (player, cherry)
 
         var x = (player.x < 400) ? Phaser.Math.Between(400, 800) : Phaser.Math.Between(0, 400);
 
+        knifeCounter++;
         var knife = knives.create(x, 16, 'knife');
         knife.setBounce(1);
         knife.setCollideWorldBounds(true);
