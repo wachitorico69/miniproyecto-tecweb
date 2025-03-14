@@ -177,7 +177,7 @@ class GameScene extends Phaser.Scene {
             //  Some cherrys to collect, 12 in total, evenly spaced 70 pixels apart along the x axis
             cherrys = this.physics.add.group({
                 key: 'cherry',
-                repeat: 14,
+                repeat: 1,
                 setXY: { x: 12, y: 0, stepX: 65 }
             });
 
@@ -351,28 +351,7 @@ class GameScene extends Phaser.Scene {
     gameEnded() {
         // Pause the game world
         this.physics.world.isPaused = true;
-        
-        // Display "Game Over" 
-        this.add.text(300, 200, "LEVEL 2 COMPLETED", {
-            fontFamily: 'SF Fedora, sans-serif',
-            fontSize: '40px',
-            fill: '#FFFFFF'
-        }).setOrigin(0.5);
-         //Botton Regresar
-        const backToMenuText = this.add.text(300, 300, "Back to Menu", {
-            fontFamily: 'SF Fedora, sans-serif',
-            fontSize: '32px',
-            fill: '#FFFFFF'
-        }).setOrigin(0.5);
-        this.add.text(340, 360, 'Total score: ' + score + ' ', { fontFamily: 'SF Fedora, sans-serif', fontSize: '30px', fill: '#ff23da' });
-
-        // Add an interactive event to the "Back to Menu" text
-        backToMenuText.setInteractive();
-        //Guarda y sale
-        backToMenuText.on('pointerdown', () => {
-            saveRecord(playerName, score);
-            exitGame();
-        });
+        this.scene.start('VictoryS');
     
     }
 }
@@ -488,12 +467,13 @@ class VictoryS extends Phaser.Scene {
             const graphics = this.add.graphics();
             graphics.fillStyle(0x5343e7, 1);
             graphics.fillRect(660, 0, 300, 538);
-            this.add.text(700, 40, '¡VICTORY! ', { fontFamily: 'SF Fedora, sans-serif', fontSize: '30px', fill: '#ff23da' });
-            this.add.text(700, 60, 'Congratulations \n' + playerName + ' ', { fontFamily: 'SF Fedora, sans-serif', fontSize: '30px', fill: '#ff23da' });
-            this.add.text(700, 360, 'Total score: \n' + score + ' ', { fontFamily: 'SF Fedora, sans-serif', fontSize: '30px', fill: '#ff23da' });
-            this.add.image(810, 200, 'jojopose').setScale(0.75);
+            this.add.text(710, 20, '¡VICTORY! ', { fontFamily: 'SF Fedora, sans-serif', fontSize: '40px', fill: '#ff23da' });
+            this.add.text(680, 75, 'Congratulations ', { fontFamily: 'SF Fedora, sans-serif', fontSize: '30px', fill: '#ff23da' });
+            this.add.text(755, 115, '¡' + playerName + '! ', { fontFamily: 'SF Fedora, sans-serif', fontSize: '30px', fill: '#ff23da' });
+            this.add.text(710, 350, 'Total score: \n' + score + ' ', { fontFamily: 'SF Fedora, sans-serif', fontSize: '30px', fill: '#ff23da' });
+            this.add.image(810, 250, 'jojopose').setScale(0.75);
 
-            this.add.text(700, 420, 'Back to Menu ', { fontFamily: 'SF Fedora, sans-serif', fontSize: '28px', fill: '#fff' })
+            this.add.text(700, 450, 'Back to Menu ', { fontFamily: 'SF Fedora, sans-serif', fontSize: '28px', fill: '#fff' })
             .setInteractive()
             .on('pointerdown', () => {
                 this.jojoMusicW.stop();
@@ -506,12 +486,13 @@ class VictoryS extends Phaser.Scene {
             const graphics = this.add.graphics();
             graphics.fillStyle(0xfffe00, 1);
             graphics.fillRect(660, 0, 300, 538);
-            this.add.text(720, 20, '¡VICTORY! ', { fontFamily: 'SF Fedora, sans-serif', fontSize: '40px', fill: '#ff23da' });
-            this.add.text(680, 60, 'Congratulations \n' + playerName + ' ', { fontFamily: 'SF Fedora, sans-serif', fontSize: '30px', fill: '#ff23da' });
-            this.add.text(700, 360, 'Total score: \n' + score + ' ', { fontFamily: 'SF Fedora, sans-serif', fontSize: '30px', fill: '#ff23da' });
-            this.add.image(807, 200, 'diopose').setScale(0.75);
+            this.add.text(710, 20, '¡VICTORY! ', { fontFamily: 'SF Fedora, sans-serif', fontSize: '40px', fill: '#ff23da' });
+            this.add.text(680, 75, 'Congratulations ', { fontFamily: 'SF Fedora, sans-serif', fontSize: '30px', fill: '#ff23da' });
+            this.add.text(755, 115, '¡' + playerName + '! ', { fontFamily: 'SF Fedora, sans-serif', fontSize: '30px', fill: '#ff23da' });
+            this.add.text(700, 350, 'Total score: \n' + score + ' ', { fontFamily: 'SF Fedora, sans-serif', fontSize: '30px', fill: '#ff23da' });
+            this.add.image(807, 250, 'diopose').setScale(0.75);
 
-            this.add.text(700, 430, 'Back to Menu ', { fontFamily: 'SF Fedora, sans-serif', fontSize: '28px', fill: '#89e989' })
+            this.add.text(700, 450, 'Back to Menu ', { fontFamily: 'SF Fedora, sans-serif', fontSize: '28px', fill: '#89e989' })
             .setInteractive()
             .on('pointerdown', () => {
                 this.dioMusicW.stop();
@@ -734,6 +715,7 @@ function hitKnife (player, knife)
         scene.heart1.setVisible(false);
         player_is_dead = true;
         this.musicaN1.stop();
+        this.musicaN2.stop();
     
         if (modelo === 1) {
             this.jojodmg.play();
