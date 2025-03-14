@@ -177,7 +177,7 @@ class GameScene extends Phaser.Scene {
             //  Some cherrys to collect, 12 in total, evenly spaced 70 pixels apart along the x axis
             cherrys = this.physics.add.group({
                 key: 'cherry',
-                repeat: 2,
+                repeat: 14,
                 setXY: { x: 12, y: 0, stepX: 65 }
             });
 
