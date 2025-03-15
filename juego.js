@@ -32,6 +32,7 @@ class GameScene extends Phaser.Scene {
             this.load.audio('jojodmg', 'sonidos/jojodmg.mp3');
             this.load.audio('diodmg', 'sonidos/diodmg.mp3');
             this.load.audio('bark', 'sonidos/bark.mp3');
+            this.load.audio('ayay', 'sonidos/ayay.mp3');
             this.load.audio('knife', 'sonidos/knife.mp3');
 
             //personajes
@@ -64,6 +65,7 @@ class GameScene extends Phaser.Scene {
             this.jojodmg = this.sound.add('jojodmg');
             this.diodmg = this.sound.add('diodmg');
             this.bark = this.sound.add('bark');
+            this.ayay = this.sound.add('ayay');
             this.knife = this.sound.add('knife');
 
             this.musicaN1.play();
@@ -88,7 +90,7 @@ class GameScene extends Phaser.Scene {
             // Animaciones y hitboxes distintos según el personaje
             if(modelo === 1) { //JOTARO
                 player.setOrigin(0.5, 0.5);
-                player.body.setSize(50, 90).setOffset(20, 10);
+                player.body.setSize(40, 90).setOffset(25, 15);
 
                 this.anims.create({
                     key: 'left',
@@ -301,10 +303,10 @@ class GameScene extends Phaser.Scene {
                 this.scene.pause(); // Pause game
             }
 
-        if (knifeCounter === 1 && !Level2){
+        if (knifeCounter === 6 && !Level2){
             this.levelUp();
         }
-        if (knifeCounter === 1 && Level2 === true){
+        if (knifeCounter === 3 && Level2 === true){
             this.gameEnded();
         }
     }
@@ -338,15 +340,16 @@ class GameScene extends Phaser.Scene {
             });
             platforms.create(0, 525, 'ground');
             platforms.create(400, 525, 'ground');
-            platforms.create(800, 525, 'ground');
+            platforms.create(800, 525, 'ground'); 
 
-            platforms.create(470, 380, 'ground');
+            platforms.create(480, 380, 'ground');
 
             platforms.create(-10, 300, 'ground');
-            platforms.create(1000, 300, 'ground');
+            platforms.create(965, 300, 'ground');
 
-            platforms.create(470, 180, 'ground');
+            platforms.create(470, 160, 'ground');
 
+            player.setDepth(1);
             player.setPosition(100, 450);
             //TEXTO
             this.levelText.setText("Level: 2 "); 
@@ -561,14 +564,14 @@ class GameOverS extends Phaser.Scene {
             key: 'dioL',
             frames: this.anims.generateFrameNames('dioL', { prefix: 'dioL', end: 13, zeroPad: 4}),  //DIO
             frameRate: 10,
-            repeat: -1
+            repeat: 0
         });
 
         this.anims.create({
             key: 'jojoL',
             frames: this.anims.generateFrameNames('jojoL', { prefix: 'jojoL', end: 8, zeroPad: 4}),  //DIO
             frameRate: 10,
-            repeat: -1
+            repeat: 0
         });
 
         if (modelo === 1) {
@@ -576,17 +579,19 @@ class GameOverS extends Phaser.Scene {
         } else {
             const dioSprite = this.add.sprite(475, 240, 'dioL').play('dioL').setScale(1.5);
         }
-        
-        this.add.text(280, 40, 'Game Over ', { fontFamily: 'SF Fedora, sans-serif', fontSize: '70px', fill: '#ff23da' });
-        this.add.text(340, 360, 'Total score: ' + score + ' ', { fontFamily: 'SF Fedora, sans-serif', fontSize: '30px', fill: '#ff23da' });
 
-        // Opción para reanudar
-        this.add.text(365, 420, 'Back to Menu ', { fontFamily: 'SF Fedora, sans-serif', fontSize: '28px', fill: '#fff' })
-            .setInteractive()
-            .on('pointerdown', () => {
-                this.muerte.stop();
-                exitGame();
-            });
+        setTimeout(() => {
+            this.add.text(280, 40, 'Game Over ', { fontFamily: 'SF Fedora, sans-serif', fontSize: '70px', fill: '#ff23da' });
+            this.add.text(340, 360, 'Total score: ' + score + ' ', { fontFamily: 'SF Fedora, sans-serif', fontSize: '30px', fill: '#ff23da' });
+    
+            // Opción para reanudar
+            this.add.text(365, 420, 'Back to Menu ', { fontFamily: 'SF Fedora, sans-serif', fontSize: '28px', fill: '#fff' })
+                .setInteractive()
+                .on('pointerdown', () => {
+                    this.muerte.stop();
+                    exitGame();
+                });
+        }, 2000);
     }
 }
 
@@ -623,7 +628,8 @@ var score;
 var gameOver = false;
 var scoreText;
 var life;
-var plus;
+var plus = false;
+var plus2 = false;
 var itemTime;
 let playerName = '';
 var player_is_dead = false;
@@ -661,7 +667,7 @@ function collectIggy (player, iggy) {
 
 function collectStone (player, StoneMask) {
     StoneMask.destroy(); // Elimina a Iggy cuando el jugador lo toca
-    score += 50; // Aumenta el puntaje
+    score += 100; // Aumenta el puntaje
 
     if (this.StoneMaskTimer) {
         this.StoneMaskTimer.remove(); // eliminar temp
@@ -676,11 +682,11 @@ function collectStone (player, StoneMask) {
         this.dioSpecial.play();
     }
 
-    plus = true;
+    plus2 = true;
     
     this.time.delayedCall(5000, () => { 
         player.clearTint();
-        plus = false;
+        plus2 = false;
     }, [], this);
     
     scoreText.setText(score + ' ');
@@ -701,17 +707,23 @@ function collectCherry (player, cherry)
         this.diopick.play();
     }
 
-    if (plus === true) {
-        score += 20;
-    } else {
-        score += 10;
+    let cherryValor = 10;
+
+    if (plus) {
+        cherryValor = 20;
     }
+
+    if (plus2) {
+        cherryValor = 30;
+    }
+
+    score += cherryValor;
 
     scoreText.setText(score + ' ');
 
     if (Level2) {
         if (cherrys.countActive(true) === 10) {
-            let y = Phaser.Math.Between(50, 450);
+            let y = Math.random() < 0.5 ? 130 : 360;
             let x = Math.random() < 0.5 ? 0 : 960;
             let knife = knives.create(x, y, 'knife');
             knife.setBounce(1);
@@ -722,11 +734,12 @@ function collectCherry (player, cherry)
             knife.setAngularVelocity(Phaser.Math.Between(-200, 200)); 
             knife.setDepth(1);
 
-            let pos = [[650, 320], [200, 220], [775, 190], [200, 480], [500, 480], [800, 480]]; 
-            let random = Math.floor(Math.random() * 6); 
+            let pos = [[500,480], [480, 345], [455, 130], [170, 265], [810, 280]]; 
+            let random = Math.floor(Math.random() * 5); 
     
             var StoneMask = StoneMasks.create(pos[random][0], pos[random][1],'StoneMask');
             StoneMask.anims.play('StoneMask');
+            this.ayay.play();
     
             let count = 5;
             itemTime.setText(count.toString() + ' '); 
