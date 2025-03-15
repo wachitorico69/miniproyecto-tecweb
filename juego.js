@@ -174,7 +174,7 @@ class GameScene extends Phaser.Scene {
             });
 
             this.anims.create({
-                key: 'StoneMaskAnimation',
+                key: 'StoneMask',
                 frames: this.anims.generateFrameNames('StoneMask', { prefix: 'StoneMask', end: 8, zeroPad: 4 }),
                 frameRate: 8,
                 repeat: -1
@@ -191,6 +191,7 @@ class GameScene extends Phaser.Scene {
             });
 
             iggys = this.physics.add.group();
+            StoneMasks = this.physics.add.group();
 
             cherrys.children.iterate(function (child) {
 
@@ -233,11 +234,14 @@ class GameScene extends Phaser.Scene {
             this.physics.add.collider(cherrys, platforms);
             this.physics.add.collider(knives, platforms);
             this.physics.add.collider(iggys, platforms);
+            this.physics.add.collider(StoneMasks, platforms);
 
             //  Checks to see if the player overlaps with any of the cherrys, if he does call the collectCherry function
             this.physics.add.overlap(player, cherrys, collectCherry, null, this);
 
             this.physics.add.overlap(player, iggys, collectIggy, null, this);
+
+            this.physics.add.overlap(player, StoneMasks, collectStone, null, this);
 
             this.physics.add.collider(player, knives, hitKnife, null, this);
             
@@ -297,10 +301,10 @@ class GameScene extends Phaser.Scene {
                 this.scene.pause(); // Pause game
             }
 
-        if (knifeCounter === 4 && !Level2){
+        if (knifeCounter === 1 && !Level2){
             this.levelUp();
         }
-        if (knifeCounter === 3 && Level2 === true){
+        if (knifeCounter === 1 && Level2 === true){
             this.gameEnded();
         }
     }
@@ -611,6 +615,7 @@ function startPhaserGame() {
 var player;
 var cherrys;
 var iggys;
+var StoneMasks;
 var knives;
 var platforms;
 var cursors;
@@ -623,6 +628,7 @@ var itemTime;
 let playerName = '';
 var player_is_dead = false;
 var iggyTimer = null;
+var StoneMask = null;
 
 function collectIggy (player, iggy) {
     iggy.destroy(); // Elimina a Iggy cuando el jugador lo toca
@@ -631,6 +637,35 @@ function collectIggy (player, iggy) {
     if (this.iggyTimer) {
         this.iggyTimer.remove(); // eliminar temp
         this.iggyTimer = null;
+    }
+
+    if (modelo === 1) {
+        player.setTint(0x659df7);
+        this.jojoSpecial.play();
+    } else {
+        player.setTint(0x5bf502);
+        this.dioSpecial.play();
+    }
+
+    plus = true;
+    
+    this.time.delayedCall(5000, () => { 
+        player.clearTint();
+        plus = false;
+    }, [], this);
+    
+    scoreText.setText(score + ' ');
+
+    itemTime.setText(' ');
+}
+
+function collectStone (player, StoneMask) {
+    StoneMask.destroy(); // Elimina a Iggy cuando el jugador lo toca
+    score += 50; // Aumenta el puntaje
+
+    if (this.StoneMaskTimer) {
+        this.StoneMaskTimer.remove(); // eliminar temp
+        this.StoneMaskTimer = null;
     }
 
     if (modelo === 1) {
@@ -673,8 +708,52 @@ function collectCherry (player, cherry)
     }
 
     scoreText.setText(score + ' ');
-    //let rand = Math.floor(Math.random() * 15);
-    if (cherrys.countActive(true) === 10) {
+
+    if (Level2) {
+        if (cherrys.countActive(true) === 10) {
+            let y = Phaser.Math.Between(50, 450);
+            let x = Math.random() < 0.5 ? 0 : 960;
+            let knife = knives.create(x, y, 'knife');
+            knife.setBounce(1);
+            knife.setCollideWorldBounds(true);
+            knife.setVelocity(Phaser.Math.Between(-200, 200), 20);
+            knife.allowGravity = false;
+
+            knife.setAngularVelocity(Phaser.Math.Between(-200, 200)); 
+            knife.setDepth(1);
+
+            let pos = [[650, 320], [200, 220], [775, 190], [200, 480], [500, 480], [800, 480]]; 
+            let random = Math.floor(Math.random() * 6); 
+    
+            var StoneMask = StoneMasks.create(pos[random][0], pos[random][1],'StoneMask');
+            StoneMask.anims.play('StoneMask');
+    
+            let count = 5;
+            itemTime.setText(count.toString() + ' '); 
+            
+            // eliminar temp antes de crear uno nuevo
+            if (this.StoneMaskTimer) {
+                this.StoneMaskTimer.remove();
+            }
+    
+            this.StoneMaskTimer = this.time.addEvent({
+                delay: 1000, // 1 segundo
+                repeat: count - 1, // 5 veces
+                callback: () => {
+                    count--;
+                    itemTime.setText(count.toString() + ' ');
+    
+                    if (count === 0) {
+                        StoneMask.destroy();
+                        itemTime.setText(' ');
+                        this.StoneMaskTimer = null; // referencia temp
+                    }
+                }
+            });          
+        }
+    }
+    
+    if (cherrys.countActive(true) === 10 && !Level2) {
         let pos = [[650, 320], [200, 220], [775, 190], [200, 480], [500, 480], [800, 480]]; 
         let random = Math.floor(Math.random() * 6); 
 
@@ -726,19 +805,6 @@ function collectCherry (player, cherry)
         knife.allowGravity = false;
 
         knife.setAngularVelocity(Phaser.Math.Between(-200, 200)); //hace que el cuchillo rote
-        // Se crea un cuchillo que va de lado a lado
-        if (Level2) {
-            // Cuchillo veloz
-            let x = Phaser.Math.Between(50, 750);
-            let knife = knives.create(x, 16, 'knife');
-            knife.setBounce(1);
-            knife.setCollideWorldBounds(true);
-            knife.setVelocity(Phaser.Math.Between(400, 500), 0); 
-            knife.allowGravity = false;
-
-            knife.setAngularVelocity(Phaser.Math.Between(-200, 200)); 
-            knife.setDepth(1); 
-        }
     }
 }
 
