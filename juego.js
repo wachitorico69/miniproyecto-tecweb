@@ -734,7 +734,7 @@ function collectCherry (player, cherry)
             knife.setAngularVelocity(Phaser.Math.Between(-200, 200)); 
             knife.setDepth(1);
 
-            let pos = [[500,480], [480, 345], [455, 130], [170, 265], [810, 280]]; 
+            let pos = [[810, 265],[810, 265], [810, 265], [810, 265], [810, 265]]; 
             let random = Math.floor(Math.random() * 5); 
     
             var StoneMask = StoneMasks.create(pos[random][0], pos[random][1],'StoneMask');
