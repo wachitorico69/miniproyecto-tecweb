@@ -707,40 +707,6 @@ function collectCherry (player, cherry)
                
     }
 
-    //let rand = Math.floor(Math.random() * 15);
-    if (cherrys.countActive(true) === 10) {
-        let pos = [[650, 320], [200, 220], [775, 190], [200, 480], [500, 480], [800, 480]]; 
-        let random = Math.floor(Math.random() * 6); 
-
-        var iggy = iggys.create(pos[random][0], pos[random][1],'iggy');
-        iggy.anims.play('iggy');
-        this.bark.play();
-
-        let count = 5;
-        itemTime.setText(count.toString() + ' '); 
-        
-        // eliminar temp antes de crear uno nuevo
-        if (this.iggyTimer) {
-            this.iggyTimer.remove();
-        }
-
-        this.iggyTimer = this.time.addEvent({
-            delay: 1000, // 1 segundo
-            repeat: count - 1, // 5 veces
-            callback: () => {
-                count--;
-                itemTime.setText(count.toString() + ' ');
-
-                if (count === 0) {
-                    iggy.destroy();
-                    itemTime.setText(' ');
-                    this.iggyTimer = null; // referencia temp
-                }
-            }
-        });
-               
-    }
-
     if (cherrys.countActive(true) === 0)
     {
         //  A new batch of cherrys to collect
