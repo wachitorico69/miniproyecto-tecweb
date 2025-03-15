@@ -2,6 +2,7 @@
 let modelo = 0; //si es 1 usa jojo, 2 dio
 let knifeCounter = 0;
 let Level2 = false; 
+let knifeTimer = null;
 class GameScene extends Phaser.Scene {
     constructor() {
         super({ key: 'GameScene' }); //no funciona sin esto
@@ -291,7 +292,7 @@ class GameScene extends Phaser.Scene {
         if (knifeCounter === 1 && !Level2){
             this.levelUp();
         }
-        if (knifeCounter === 1 && Level2 === true){
+        if (knifeCounter === 3 && Level2 === true){
             this.gameEnded();
         }
     }
@@ -718,6 +719,19 @@ function collectCherry (player, cherry)
         knife.allowGravity = false;
 
         knife.setAngularVelocity(Phaser.Math.Between(-200, 200)); //hace que el cuchillo rote
+        // Se crea un cuchillo que va de lado a lado
+        if (Level2) {
+            // Cuchillo veloz
+            let x = Phaser.Math.Between(50, 750);
+            let knife = knives.create(x, 16, 'knife');
+            knife.setBounce(1);
+            knife.setCollideWorldBounds(true);
+            knife.setVelocity(Phaser.Math.Between(400, 500), 0); 
+            knife.allowGravity = false;
+
+            knife.setAngularVelocity(Phaser.Math.Between(-200, 200)); 
+            knife.setDepth(1); 
+        }
     }
 }
 
